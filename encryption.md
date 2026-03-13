@@ -49,6 +49,20 @@ Both directions of a channel use the same shared key.
   at all realistic message volumes.
 - The relay's transport security (e.g. HTTPS) is additive. Confidentiality does not
   depend on it — termination at the relay does not expose plaintext.
+- **The encryption guarantee is independent of storage security.** Because nodes and
+  clients are the hard targets (see [`security-model.md`](security-model.md)) and
+  storage is the primary attack surface, the encryption layer is specifically designed
+  to hold even against a fully compromised storage provider. An attacker with complete
+  read access to storage obtains only ciphertext. This guarantee holds only so long as
+  endpoints remain isolated from inbound connections and the shared secret is not
+  exposed through other means.
+
+**Known gap — replay attacks.** The current wire format does not include a sequence
+number or other nonce-freshness binding in the authenticated additional data (AAD). A
+captured valid ciphertext blob can be re-inserted into an empty slot and will pass
+AES-GCM authentication at the receiving endpoint. Adding a monotonically increasing
+sequence number to the AAD field would close this gap and is a candidate for a future
+wire format revision.
 
 ---
 
