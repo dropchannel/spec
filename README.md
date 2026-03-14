@@ -115,7 +115,7 @@ separated by a hyphen:
 {prefix}-{identifier}
 ```
 
-Examples: `winch-documents`, `ring-telemetry`, `piston-updates`
+Examples: `winch-documents`, `conveyer-telemetry`, `piston-chat`
 
 The prefix is the machine-readable protocol selector. A node reads the prefix of a
 channel name and instantiates the appropriate coordination protocol handler for that
@@ -130,9 +130,9 @@ The following prefixes are defined. Each maps to an authoritative protocol speci
 
 | Prefix | Protocol | Semantics | Spec |
 |--------|----------|-----------|------|
-| `winch-` | Winch | Hold-and-cascade with ACK | [dropchannel/winch-protocol] |
-| `ring-` | Ring | Rolling window, no ACK | [dropchannel/ring-protocol] |
-| `piston-` | Piston | TBD | [dropchannel/piston-protocol] |
+| `winch-` | Winch | Store-and-forward, backpressure, back-cascade ACK | [dropchannel/winch-protocol] |
+| `conveyer-` | Conveyer | Store-and-forward, no back-pressure, no ACK | [dropchannel/conveyer-protocol] |
+| `piston-` | Piston | TBD | TBD |
 
 ### Unrecognized Prefixes
 
@@ -209,8 +209,7 @@ Conformant implementations are listed in the [Implementations](#implementations)
 github.com/dropchannel/
   spec/                 ← This repository: system specification (you are here)
   winch-protocol/       ← Winch protocol specification
-  ring-protocol/        ← Ring protocol specification
-  piston-protocol/      ← Piston protocol specification
+  conveyer-protocol/    ← Conveyer protocol specification
   dropchannel-py/       ← Python reference implementation
   .github/              ← Org profile, ADRs, planning documents
 ```
