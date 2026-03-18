@@ -133,6 +133,12 @@ The following prefixes are defined. Each maps to an authoritative protocol speci
 | `winch-` | Winch | Store-and-forward, backpressure, back-cascade ACK | [dropchannel/winch-protocol] |
 | `conveyer-` | Conveyer | Store-and-forward, no back-pressure, no ACK | [dropchannel/conveyer-protocol] |
 | `piston-` | Piston | TBD | TBD |
+| `telemetry-` | Conveyer | Observability side-channel. Each participant writes a self-describing state blob to a shared channel, one slot per participant keyed by participant ID. No ACK, no backpressure, plaintext. Consumed by external monitoring tools. | [spec/telemetry.md] |
+| `heartbeat-` | Meta slot | Per-hop liveness chain operating on meta slots alongside primary payload slots. Nodes relay upstream heartbeat content forward; clients write status signals. Plaintext. | [spec/heartbeat.md] |
+
+The `telemetry-` and `heartbeat-` prefixes are reserved for the observability layer.
+They are listed here for completeness and prefix reservation — a conformant node
+does not dispatch payload traffic on these channels. See `spec/observability.md`.
 
 ### Unrecognized Prefixes
 
@@ -210,9 +216,19 @@ github.com/dropchannel/
   spec/                 ← This repository: system specification (you are here)
   winch-protocol/       ← Winch protocol specification
   conveyer-protocol/    ← Conveyer protocol specification
+  monitor/              ← Implementation-agnostic topology visualizer
   dropchannel-py/       ← Python reference implementation
   .github/              ← Org profile, ADRs, planning documents
 ```
+
+This repository (`spec`) owns the system-level specification: the ChannelProvider
+interface, encryption standard, security model, protocol dispatch rules, protocol
+registry, and the observability layer (`observability.md`, `heartbeat.md`,
+`telemetry.md`).
+
+The `monitor/` repository owns the topology visualizer tool. It is
+implementation-agnostic — any conformant DropChannel implementation can feed it by
+emitting telemetry blobs as defined in `spec/telemetry.md`.
 
 ---
 
