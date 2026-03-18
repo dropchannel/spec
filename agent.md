@@ -58,7 +58,7 @@ the config on startup and on receipt of `SIGHUP` (reload).
 
 ### Structure
 
-The config has four top-level sections: `agent`, `log`, `backends`, and `workers`.
+The config has five top-level sections: `agent`, `log`, `telemetry`, `backends`, and `workers`.
 
 #### `[agent]`
 
@@ -67,14 +67,12 @@ General host-level settings.
 ```toml
 [agent]
 node_id = "a unique stable identifier for this host"
-telemetry_channel_id = "telemetry-<identifier>"
 telemetry_refresh_interval_seconds = 60
 ```
 
 - `node_id` — stable identifier for this host. Used as the Agent's identity in the
   `telemetry-` channel slot name and in log output. Must be unique across all hosts
   sharing any common storage backend.
-- `telemetry_channel_id` — the `telemetry-` channel this Agent writes its state blob to.
 - `telemetry_refresh_interval_seconds` — how often the Agent rewrites its telemetry slot
   even when no lifecycle event has occurred. Default: 60. Minimum: 10.
 
@@ -95,6 +93,27 @@ level = "info"           # "debug" | "info" | "warn" | "error"
 - `stderr` and `file` are independent; both may be active simultaneously.
 - If neither `stderr` nor `file` is set to an active destination, the Agent MUST emit
   a startup warning and default to `stderr = true`.
+
+#### `[telemetry]`
+
+Configures the telemetry provider — the storage backend the Agent writes its telemetry
+slot to. This is independent of `[backends]`: it is not named, not referenced by workers,
+and not a general-purpose backend. It is typically a shared, dedicated storage location
+serving all nodes in a deployment, allowing a single monitoring tool to read telemetry
+from all participants without access to per-node payload backends.
+
+```toml
+[telemetry]
+channel_id = "telemetry-dropchannel-prod"
+type = "gcs"
+bucket = "dropchannel-telemetry"
+credentials = "/path/to/sa.json"
+```
+
+- `channel_id` — the `telemetry-` channel this Agent writes its state blob to.
+- `type`, `bucket`, `credentials` (and other provider-specific fields) — ChannelProvider
+  configuration for the telemetry backend, using the same field conventions as `[backends]`
+  entries.
 
 #### `[backends]`
 
