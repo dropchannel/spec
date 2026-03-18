@@ -216,17 +216,17 @@ github.com/dropchannel/
   spec/                 ← This repository: system specification (you are here)
   winch-protocol/       ← Winch protocol specification
   conveyer-protocol/    ← Conveyer protocol specification
-  monitor/              ← Implementation-agnostic topology visualizer
+  dc-monitor/              ← Implementation-agnostic topology visualizer
   dropchannel-py/       ← Python reference implementation
   .github/              ← Org profile, ADRs, planning documents
 ```
 
 This repository (`spec`) owns the system-level specification: the ChannelProvider
 interface, encryption standard, security model, protocol dispatch rules, protocol
-registry, and the observability layer (`observability.md`, `heartbeat.md`,
-`telemetry.md`).
+registry, the observability layer (`observability.md`, `heartbeat.md`, `telemetry.md`),
+and the Agent/Worker runtime specification (`agent.md`).
 
-The `monitor/` repository owns the topology visualizer tool. It is
+The `dc-monitor/` repository owns the topology visualizer tool. It is
 implementation-agnostic — any conformant DropChannel implementation can feed it by
 emitting telemetry blobs as defined in `spec/telemetry.md`.
 
