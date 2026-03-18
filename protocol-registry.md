@@ -13,8 +13,8 @@ encrypted payload.
 | Prefix | Protocol | Spec | Semantics |
 |--------|----------|------|-----------|
 | `winch-` | Winch | [`winch-protocol`](https://github.com/dropchannel/winch-protocol) | Hold-and-cascade: blob accumulates at every hop during forward pass; terminating endpoint's read triggers deletion cascade backward through the chain. Structural backpressure; implicit delivery confirmation. |
-| `ring-` | Ring | [`ring-protocol`](https://github.com/dropchannel/ring-protocol) | Rolling window, no ACK: producer overwrites oldest slot when window is full; consumer tracks read cursor; producer never stalls. Designed for streaming and telemetry use cases where individual entries are lossy by design. |
-| `piston-` | Piston | [`piston-protocol`](https://github.com/dropchannel/piston-protocol) | TBD |
+| `ring-` | Ring | `ring-protocol` (not yet created) | Rolling window, no ACK: producer overwrites oldest slot when window is full; consumer tracks read cursor; producer never stalls. Designed for streaming and telemetry use cases where individual entries are lossy by design. |
+| `piston-` | Piston | `piston-protocol` (not yet created) | TBD |
 
 ---
 

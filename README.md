@@ -130,11 +130,11 @@ The following prefixes are defined. Each maps to an authoritative protocol speci
 
 | Prefix | Protocol | Semantics | Spec |
 |--------|----------|-----------|------|
-| `winch-` | Winch | Store-and-forward, backpressure, back-cascade ACK | [dropchannel/winch-protocol] |
-| `conveyer-` | Conveyer | Store-and-forward, no back-pressure, no ACK | [dropchannel/conveyer-protocol] |
+| `winch-` | Winch | Store-and-forward, backpressure, back-cascade ACK | [dropchannel/winch-protocol](https://github.com/dropchannel/winch-protocol) |
+| `conveyer-` | Conveyer | Store-and-forward, no back-pressure, no ACK | [dropchannel/conveyer-protocol](https://github.com/dropchannel/conveyer-protocol) |
 | `piston-` | Piston | TBD | TBD |
-| `telemetry-` | Conveyer | Observability side-channel. Each participant writes a self-describing state blob to a shared channel, one slot per participant keyed by participant ID. No ACK, no backpressure, plaintext. Consumed by external monitoring tools. | [spec/telemetry.md] |
-| `heartbeat-` | Meta slot | Per-hop liveness chain operating on meta slots alongside primary payload slots. Nodes relay upstream heartbeat content forward; clients write status signals. Plaintext. | [spec/heartbeat.md] |
+| `telemetry-` | Conveyer | Observability side-channel. Each participant writes a self-describing state blob to a shared channel, one slot per participant keyed by participant ID. No ACK, no backpressure, plaintext. Consumed by external monitoring tools. | [telemetry.md](telemetry.md) |
+| `heartbeat-` | Meta slot | Per-hop liveness chain operating on meta slots alongside primary payload slots. Nodes relay upstream heartbeat content forward; clients write status signals. Plaintext. | [heartbeat.md](heartbeat.md) |
 
 The `telemetry-` and `heartbeat-` prefixes are reserved for the observability layer.
 They are listed here for completeness and prefix reservation — a conformant node
@@ -205,7 +205,7 @@ Conformant implementations are listed in the [Implementations](#implementations)
 
 | Implementation | Language | Status | Repository |
 |----------------|----------|--------|------------|
-| dropchannel-py | Python   | Active | [dropchannel/dropchannel-py] |
+| dropchannel-py | Python   | Active | [dropchannel/dropchannel-py](https://github.com/dropchannel/dropchannel-py) |
 
 ---
 
