@@ -2,8 +2,8 @@
 
 **Status:** Draft  
 **Prefix:** `telemetry-`  
-**Protocol:** Conveyer (overwrite-always, no ACK)  
-**Related:** `protocol-registry.md`, `conveyer-protocol/README.md`, `channel-provider.md`
+**Protocol:** Current (overwrite-always, no ACK)  
+**Related:** `protocol-registry.md`, `current-protocol/README.md`, `channel-provider.md`
 
 ---
 
@@ -32,7 +32,7 @@ config files, or out-of-band communication.
 ## Channel naming
 
 Telemetry channels use the `telemetry-` prefix, placing them in the protocol registry
-alongside `tide-`, `conveyer-`, and other protocol prefixes.
+alongside `tide-`, `current-`, and other protocol prefixes.
 
 A DropChannel deployment uses a **single shared telemetry channel** for all
 participants. All nodes and clients in the system write to the same channel, each
@@ -54,7 +54,7 @@ same channel.
 
 ## Protocol semantics
 
-The telemetry channel uses **Conveyer protocol semantics**:
+The telemetry channel uses **Current protocol semantics**:
 
 - **Overwrite-always:** Each write replaces the previous value unconditionally.
 - **No ACK:** There is no acknowledgement or backpressure. A participant writes and
@@ -295,4 +295,4 @@ The following entry belongs in `protocol-registry.md`:
 
 | Prefix       | Protocol | Description |
 |--------------|----------|-------------|
-| `telemetry-` | Conveyer | Observability channel. Participants emit self-describing state blobs. One shared channel per deployment; one slot per participant. No ACK, no backpressure, plaintext. |
+| `telemetry-` | Current | Observability channel. Participants emit self-describing state blobs. One shared channel per deployment; one slot per participant. No ACK, no backpressure, plaintext. |
