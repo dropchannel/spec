@@ -13,7 +13,7 @@ The heartbeat protocol provides continuous, per-hop liveness signaling within a 
 DropChannel pipeline. It operates independently of primary payload traffic and introduces
 no coupling to primary slot semantics.
 
-Heartbeat addresses two observability gaps present in Winch pipelines without it:
+Heartbeat addresses two observability gaps present in Tide pipelines without it:
 
 1. A stalled pipeline is indistinguishable from a pipeline with an offline participant.
 2. In a multi-hop chain, there is no mechanism to identify which specific hop is

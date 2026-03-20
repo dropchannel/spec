@@ -16,7 +16,7 @@ The following files exist and are current through v0.6 of the implementation:
 | `channel-provider.md` | Full ChannelProvider interface: 5 primary slot operations + 4 meta slot operations, contracts, provider implementations table, slot naming convention | Current |
 | `encryption.md` | AES-256-GCM spec, wire format, key distribution, security properties, known replay gap, scope note re: heartbeat plaintext | Current |
 | `security-model.md` | What is/isn't protected, trust boundaries, threat model scope, open items (slot integrity, existence opacity, replay, silent corruption) | Current |
-| `protocol-registry.md` | Registered protocols (winch, ring, piston), dispatch rules, protocol selection rationale, how to add a protocol | Current |
+| `protocol-registry.md` | Registered protocols (tide, ring, piston), dispatch rules, protocol selection rationale, how to add a protocol | Current |
 | `observability.md` | Two-layer observability overview: heartbeat vs. telemetry, when to use each, what neither provides | Current |
 | `heartbeat.md` | Per-hop liveness protocol: meta slot model, node and client heartbeat cycles, startup purge, chain reading, security notes | Current |
 | `telemetry.md` | External monitoring side-channel: blob schema v1, participant states, topology reconstruction algorithm, staleness, security considerations | Current |

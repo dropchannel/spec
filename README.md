@@ -115,7 +115,7 @@ separated by a hyphen:
 {prefix}-{identifier}
 ```
 
-Examples: `winch-documents`, `conveyer-telemetry`, `piston-chat`
+Examples: `tide-documents`, `conveyer-telemetry`, `piston-chat`
 
 The prefix is the machine-readable protocol selector. A node reads the prefix of a
 channel name and instantiates the appropriate coordination protocol handler for that
@@ -130,7 +130,7 @@ The following prefixes are defined. Each maps to an authoritative protocol speci
 
 | Prefix | Protocol | Semantics | Spec |
 |--------|----------|-----------|------|
-| `winch-` | Winch | Store-and-forward, backpressure, back-cascade ACK | [dropchannel/winch-protocol](https://github.com/dropchannel/winch-protocol) |
+| `tide-` | Tide | Store-and-forward, backpressure, back-cascade ACK | [dropchannel/tide-protocol](https://github.com/dropchannel/tide-protocol) |
 | `conveyer-` | Conveyer | Store-and-forward, no back-pressure, no ACK | [dropchannel/conveyer-protocol](https://github.com/dropchannel/conveyer-protocol) |
 | `piston-` | Piston | TBD | TBD |
 | `telemetry-` | Conveyer | Observability side-channel. Each participant writes a self-describing state blob to a shared channel, one slot per participant keyed by participant ID. No ACK, no backpressure, plaintext. Consumed by external monitoring tools. | [telemetry.md](telemetry.md) |
@@ -214,7 +214,7 @@ Conformant implementations are listed in the [Implementations](#implementations)
 ```
 github.com/dropchannel/
   spec/                 ← This repository: system specification (you are here)
-  winch-protocol/       ← Winch protocol specification
+  tide-protocol/       ← Tide protocol specification
   conveyer-protocol/    ← Conveyer protocol specification
   dc-monitor/              ← Implementation-agnostic topology visualizer
   dropchannel-py/       ← Python reference implementation

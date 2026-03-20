@@ -2,7 +2,7 @@
 
 The `ChannelProvider` is the core abstraction of the DropChannel system. It defines the
 complete set of operations any storage medium must support to carry blobs between
-participants in a pipeline. All protocols (Winch, Ring, etc.) and all participants
+participants in a pipeline. All protocols (Tide, Ring, etc.) and all participants
 (endpoints, nodes) interact with storage exclusively through this interface.
 
 A `ChannelProvider` implementation is transport-agnostic from the protocol's perspective.
@@ -22,14 +22,14 @@ an existing blob — the caller is responsible for checking the return value.
 
 **`read(channel_id, slot) → bytes | None`**
 Retrieve and delete a blob from a slot in a single operation (consume-on-read). Returns
-the blob bytes if a blob is present, `None` if the slot is empty. Under the Winch
+the blob bytes if a blob is present, `None` if the slot is empty. Under the Tide
 propagation protocol, only the terminating endpoint calls `read()` on a recv-slot. All
 other participants use `peek()`.
 
 **`peek(channel_id, slot) → bytes | None`**
 Retrieve a blob from a slot without consuming it. Returns the blob bytes if present,
 `None` if empty. The blob remains in the slot after this call. Used by nodes and
-originating endpoints during the forward pass of the Winch propagation protocol.
+originating endpoints during the forward pass of the Tide propagation protocol.
 
 **`exists(channel_id, slot) → bool`**
 Returns `True` if a blob is present in the slot, `False` if empty. The primary polling
@@ -38,7 +38,7 @@ each steady-state mode.
 
 **`delete(channel_id, slot) → None`**
 Delete a blob from a slot. Idempotent — no error if the slot is already empty. Called
-during the Winch ACK cascade by each node to clear its recv-slot after downstream
+during the Tide ACK cascade by each node to clear its recv-slot after downstream
 confirmation is received.
 
 ### Meta slot operations
@@ -76,7 +76,7 @@ that has been returned to the caller must not be returned again by a subsequent 
 **Slot isolation.** Primary slot operations must not affect meta slot state, and vice versa.
 
 **No cross-slot coupling.** No operation on one slot must cause a side effect on any other
-slot. (The Winch ACK cascade is implemented by participants calling `delete()` explicitly,
+slot. (The Tide ACK cascade is implemented by participants calling `delete()` explicitly,
 not by the provider.)
 
 ---

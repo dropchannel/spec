@@ -23,7 +23,7 @@ do, not how they are built in any specific runtime.
 |------|------------|
 | **Agent** | The long-running host-level supervisor process. One per physical host. |
 | **Worker** | A subprocess spawned by the Agent to perform forwarding for a single channel. One Worker per configured channel direction. |
-| **Node** | The protocol-level concept: a single forwarding hop in a Winch (or other protocol) pipeline. A Worker instantiates one Node. |
+| **Node** | The protocol-level concept: a single forwarding hop in a Tide (or other protocol) pipeline. A Worker instantiates one Node. |
 | **Agent Config** | The single configuration file owned by the Agent for the entire host. |
 | **Backend** | A named ChannelProvider configuration. Defined once in Agent Config, referenced by Workers. |
 
@@ -140,13 +140,13 @@ direction.
 
 ```toml
 [workers.foo-recv]
-channel_id = "winch-documents"
+channel_id = "tide-documents"
 recv_backend = "my-gcs"
 send_backend = "local-relay"
 poll_interval_seconds = 5
 
 [workers.foo-send]
-channel_id = "winch-documents"
+channel_id = "tide-documents"
 recv_backend = "local-relay"
 send_backend = "my-gcs"
 poll_interval_seconds = 5
@@ -155,7 +155,7 @@ poll_interval_seconds = 5
 - Worker keys (e.g. `foo-recv`) are arbitrary identifiers, unique within the config
   file. They serve as the Worker's identity in logs and telemetry.
 - `channel_id` — the full channel identifier including protocol prefix (e.g.
-  `winch-documents`). The protocol is dispatched from this prefix per the protocol
+  `tide-documents`). The protocol is dispatched from this prefix per the protocol
   registry.
 - `recv_backend` and `send_backend` reference backend keys defined in `[backends]`.
   They may be the same backend (single-provider hop) or different backends
@@ -278,7 +278,7 @@ when relaying Worker events (no field stripping).
 When `format = "text"`, the Agent renders each event as a human-readable line:
 
 ```
-2026-03-17T14:23:00Z [info] [foo-recv] worker.started channel_id=winch-documents pid=12345
+2026-03-17T14:23:00Z [info] [foo-recv] worker.started channel_id=tide-documents pid=12345
 ```
 
 ### Agent Lifecycle Events

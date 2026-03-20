@@ -12,7 +12,7 @@ encrypted payload.
 
 | Prefix | Protocol | Spec | Semantics |
 |--------|----------|------|-----------|
-| `winch-` | Winch | [`winch-protocol`](https://github.com/dropchannel/winch-protocol) | Hold-and-cascade: blob accumulates at every hop during forward pass; terminating endpoint's read triggers deletion cascade backward through the chain. Structural backpressure; implicit delivery confirmation. |
+| `tide-` | Tide | [`tide-protocol`](https://github.com/dropchannel/tide-protocol) | Hold-and-cascade: blob accumulates at every hop during forward pass; terminating endpoint's read triggers deletion cascade backward through the chain. Structural backpressure; implicit delivery confirmation. |
 | `ring-` | Ring | `ring-protocol` (not yet created) | Rolling window, no ACK: producer overwrites oldest slot when window is full; consumer tracks read cursor; producer never stalls. Designed for streaming and telemetry use cases where individual entries are lossy by design. |
 | `piston-` | Piston | `piston-protocol` (not yet created) | TBD |
 
@@ -21,7 +21,7 @@ encrypted payload.
 ## Dispatch Rules
 
 **Prefix extraction.** The protocol prefix is the substring of the channel ID up to and
-including the first `-`. A channel ID of `winch-commands` has prefix `winch-`; a channel
+including the first `-`. A channel ID of `tide-commands` has prefix `tide-`; a channel
 ID of `ring-telemetry` has prefix `ring-`.
 
 **Unrecognized prefix: halt and log.** If a node encounters a channel ID whose prefix
@@ -37,7 +37,7 @@ followed by `-`.
 
 ## Protocol Selection Rationale
 
-**Winch** is the correct choice when:
+**Tide** is the correct choice when:
 
 - Each message must be confirmed delivered before the next can be sent
 - The pipeline carries commands, file transfers, or discrete task handoffs
@@ -50,8 +50,8 @@ followed by `-`.
 - Individual entries may be lost without consequence
 - The stream as a whole is what matters — logs, telemetry, sensor feeds
 
-Backpressure is not a deficiency to work around in Winch — it is the core guarantee
-for its use cases. Ring is a sibling protocol, not a Winch variant with backpressure
+Backpressure is not a deficiency to work around in Tide — it is the core guarantee
+for its use cases. Ring is a sibling protocol, not a Tide variant with backpressure
 disabled.
 
 ---
@@ -69,4 +69,4 @@ A new protocol requires:
    See [`channel-provider.md`](channel-provider.md).
 
 A protocol prefix must be a lowercase ASCII string containing no `-` characters, ending
-with `-` as the channel ID delimiter. Examples: `winch-`, `ring-`, `piston-`.
+with `-` as the channel ID delimiter. Examples: `tide-`, `ring-`, `piston-`.

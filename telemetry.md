@@ -32,7 +32,7 @@ config files, or out-of-band communication.
 ## Channel naming
 
 Telemetry channels use the `telemetry-` prefix, placing them in the protocol registry
-alongside `winch-`, `conveyer-`, and other protocol prefixes.
+alongside `tide-`, `conveyer-`, and other protocol prefixes.
 
 A DropChannel deployment uses a **single shared telemetry channel** for all
 participants. All nodes and clients in the system write to the same channel, each
@@ -134,8 +134,8 @@ schema version `1`.
   "participant_id": "node-alpha",
   "role": "node",
   "pipeline": "a_to_b",
-  "recv_channel_id": "winch-atb-0-1",
-  "send_channel_id": "winch-atb-1-2",
+  "recv_channel_id": "tide-atb-0-1",
+  "send_channel_id": "tide-atb-1-2",
   "recv_occupied": true,
   "send_occupied": true,
   "state": "send_polling",
@@ -152,7 +152,7 @@ schema version `1`.
   "participant_id": "client-a",
   "role": "originator",
   "pipeline": "a_to_b",
-  "send_channel_id": "winch-atb-0-1",
+  "send_channel_id": "tide-atb-0-1",
   "send_occupied": true,
   "state": "awaiting_ack",
   "poll_interval_ms": 500,
@@ -168,7 +168,7 @@ schema version `1`.
   "participant_id": "client-b",
   "role": "terminator",
   "pipeline": "a_to_b",
-  "recv_channel_id": "winch-atb-3-b",
+  "recv_channel_id": "tide-atb-3-b",
   "recv_occupied": false,
   "state": "recv_polling",
   "poll_interval_ms": 500,
