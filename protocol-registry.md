@@ -13,8 +13,6 @@ encrypted payload.
 | Prefix | Protocol | Spec | Semantics |
 |--------|----------|------|-----------|
 | `tide-` | Tide | [`tide-protocol`](https://github.com/dropchannel/tide-protocol) | Hold-and-cascade: blob accumulates at every hop during forward pass; terminating endpoint's read triggers deletion cascade backward through the chain. Structural backpressure; implicit delivery confirmation. |
-| `ring-` | Ring | `ring-protocol` (not yet created) | Rolling window, no ACK: producer overwrites oldest slot when window is full; consumer tracks read cursor; producer never stalls. Designed for streaming and telemetry use cases where individual entries are lossy by design. |
-| `piston-` | Piston | `piston-protocol` (not yet created) | TBD |
 
 ---
 
@@ -22,7 +20,7 @@ encrypted payload.
 
 **Prefix extraction.** The protocol prefix is the substring of the channel ID up to and
 including the first `-`. A channel ID of `tide-commands` has prefix `tide-`; a channel
-ID of `ring-telemetry` has prefix `ring-`.
+ID of `tide-commands` has prefix `tide-`.
 
 **Unrecognized prefix: halt and log.** If a node encounters a channel ID whose prefix
 does not match any registered protocol, the node halts and logs the unrecognized prefix.
@@ -44,16 +42,6 @@ followed by `-`.
 - Backpressure is desirable — the producer should block until the consumer has taken the
   previous message
 
-**Ring** is the correct choice when:
-
-- The producer must never stall waiting for a consumer
-- Individual entries may be lost without consequence
-- The stream as a whole is what matters — logs, telemetry, sensor feeds
-
-Backpressure is not a deficiency to work around in Tide — it is the core guarantee
-for its use cases. Ring is a sibling protocol, not a Tide variant with backpressure
-disabled.
-
 ---
 
 ## Adding a Protocol
@@ -69,4 +57,4 @@ A new protocol requires:
    See [`channel-provider.md`](channel-provider.md).
 
 A protocol prefix must be a lowercase ASCII string containing no `-` characters, ending
-with `-` as the channel ID delimiter. Examples: `tide-`, `ring-`, `piston-`.
+with `-` as the channel ID delimiter. Examples: `tide-`, `telemetry-`, `heartbeat-`.

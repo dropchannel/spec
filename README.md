@@ -115,7 +115,7 @@ separated by a hyphen:
 {prefix}-{identifier}
 ```
 
-Examples: `tide-documents`, `current-telemetry`, `piston-chat`
+Examples: `tide-documents`, `current-telemetry`
 
 The prefix is the machine-readable protocol selector. A node reads the prefix of a
 channel name and instantiates the appropriate coordination protocol handler for that
@@ -132,7 +132,6 @@ The following prefixes are defined. Each maps to an authoritative protocol speci
 |--------|----------|-----------|------|
 | `tide-` | Tide | Store-and-forward, backpressure, back-cascade ACK | [dropchannel/tide-protocol](https://github.com/dropchannel/tide-protocol) |
 | `current-` | Current | Store-and-forward, no back-pressure, no ACK | [dropchannel/current-protocol](https://github.com/dropchannel/current-protocol) |
-| `piston-` | Piston | TBD | TBD |
 | `telemetry-` | Current | Observability side-channel. Each participant writes a self-describing state blob to a shared channel, one slot per participant keyed by participant ID. No ACK, no backpressure, plaintext. Consumed by external monitoring tools. | [telemetry.md](telemetry.md) |
 | `heartbeat-` | Meta slot | Per-hop liveness chain operating on meta slots alongside primary payload slots. Nodes relay upstream heartbeat content forward; clients write status signals. Plaintext. | [heartbeat.md](heartbeat.md) |
 

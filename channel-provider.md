@@ -2,7 +2,7 @@
 
 The `ChannelProvider` is the core abstraction of the DropChannel system. It defines the
 complete set of operations any storage medium must support to carry blobs between
-participants in a pipeline. All protocols (Tide, Ring, etc.) and all participants
+participants in a pipeline. All protocols and all participants
 (endpoints, nodes) interact with storage exclusively through this interface.
 
 A `ChannelProvider` implementation is transport-agnostic from the protocol's perspective.
