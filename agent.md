@@ -8,7 +8,7 @@
 ## Overview
 
 The **Agent** is the host-level supervisor process for a DropChannel deployment on a
-physical machine. One Agent runs per physical host. It owns the node's configuration,
+physical machine. One Agent runs per physical host. It owns the Raft's configuration,
 manages the lifecycle of one or more **Workers**, aggregates telemetry and logging, and
 represents the host as a single participant in the DropChannel observability layer.
 
@@ -23,11 +23,11 @@ do, not how they are built in any specific runtime.
 |------|------------|
 | **Agent** | The long-running host-level supervisor process. One per physical host. |
 | **Worker** | A subprocess spawned by the Agent to perform forwarding for a single channel. One Worker per configured channel direction. |
-| **Node** | The protocol-level concept: a single forwarding hop in a Tide (or other protocol) pipeline. A Worker instantiates one Node. |
+| **Raft** | The protocol-level concept: a single forwarding hop in a Tideway (or other protocol) pipeline. A Worker instantiates one Raft. |
 | **Agent Config** | The single configuration file owned by the Agent for the entire host. |
-| **Backend** | A named ChannelProvider configuration. Defined once in Agent Config, referenced by Workers. |
+| **Dock** | A named DockProvider configuration. Defined once in Agent Config, referenced by Workers. |
 
-The term **Node** retains its protocol-level meaning throughout the DropChannel spec
+The term **Raft** retains its protocol-level meaning throughout the DropChannel spec
 ecosystem. Agent and Worker are runtime concepts that exist below the protocol layer.
 
 ---
@@ -42,7 +42,7 @@ The Agent is responsible for:
    Workers.
 3. **Log aggregation** — capturing structured output from Workers and writing a unified
    log for the host.
-4. **Telemetry participation** — maintaining the host's single slot in the `telemetry-`
+4. **Telemetry participation** — maintaining the host's single Waterway in the `telemetry-`
    channel, representing the aggregate state of all Workers.
 5. **Signal handling** — responding to OS signals for graceful shutdown and config reload.
 
@@ -58,7 +58,7 @@ the config on startup and on receipt of `SIGHUP` (reload).
 
 ### Structure
 
-The config has five top-level sections: `agent`, `log`, `telemetry`, `backends`, and `workers`.
+The config has five top-level sections: `agent`, `log`, `telemetry`, `docks`, and `workers`.
 
 #### `[agent]`
 
@@ -66,14 +66,14 @@ General host-level settings.
 
 ```toml
 [agent]
-node_id = "a unique stable identifier for this host"
+raft_id = "a unique stable identifier for this host"
 telemetry_refresh_interval_seconds = 60
 ```
 
-- `node_id` — stable identifier for this host. Used as the Agent's identity in the
-  `telemetry-` channel slot name and in log output. Must be unique across all hosts
-  sharing any common storage backend.
-- `telemetry_refresh_interval_seconds` — how often the Agent rewrites its telemetry slot
+- `raft_id` — stable identifier for this host. Used as the Agent's identity in the
+  `telemetry-` channel Waterway name and in log output. Must be unique across all hosts
+  sharing any common storage Dock.
+- `telemetry_refresh_interval_seconds` — how often the Agent rewrites its telemetry Waterway
   even when no lifecycle event has occurred. Default: 60. Minimum: 10.
 
 #### `[log]`
@@ -96,69 +96,69 @@ level = "info"           # "debug" | "info" | "warn" | "error"
 
 #### `[telemetry]`
 
-Configures the telemetry provider — the storage backend the Agent writes its telemetry
-slot to. This is independent of `[backends]`: it is not named, not referenced by workers,
-and not a general-purpose backend. It is typically a shared, dedicated storage location
-serving all nodes in a deployment, allowing a single monitoring tool to read telemetry
-from all participants without access to per-node payload backends.
+Configures the telemetry provider — the storage Dock the Agent writes its telemetry
+Waterway to. This is independent of `[docks]`: it is not named, not referenced by workers,
+and not a general-purpose Dock. It is typically a shared, dedicated storage location
+serving all Rafts in a deployment, allowing a single monitoring tool to read telemetry
+from all participants without access to per-Raft payload Docks.
 
 ```toml
 [telemetry]
-channel_id = "telemetry-dropchannel-prod"
+channel = "telemetry-dropchannel-prod"
 type = "gcs"
 bucket = "dropchannel-telemetry"
 credentials = "/path/to/sa.json"
 ```
 
-- `channel_id` — the `telemetry-` channel this Agent writes its state blob to.
-- `type`, `bucket`, `credentials` (and other provider-specific fields) — ChannelProvider
-  configuration for the telemetry backend, using the same field conventions as `[backends]`
+- `channel` — the `telemetry-` channel this Agent writes its state blob to.
+- `type`, `bucket`, `credentials` (and other provider-specific fields) — DockProvider
+  configuration for the telemetry Dock, using the same field conventions as `[docks]`
   entries.
 
-#### `[backends]`
+#### `[docks]`
 
-Named ChannelProvider configurations. Each backend is defined once here and referenced
-by name in worker configs. Workers do not hold their own backend credentials.
+Named DockProvider configurations. Each Dock is defined once here and referenced
+by name in worker configs. Workers do not hold their own Dock credentials.
 
 ```toml
-[backends.my-gcs]
+[docks.my-gcs]
 type = "gcs"
 bucket = "dropchannel-prod"
 credentials = "/path/to/service-account.json"
 
-[backends.local-relay]
+[docks.local-relay]
 type = "local"
 path = "/tmp/dropchannel"
 ```
 
-Backend keys (e.g. `my-gcs`) are arbitrary identifiers, unique within the config file.
+Dock keys (e.g. `my-gcs`) are arbitrary identifiers, unique within the config file.
 
 #### `[workers]`
 
-One subsection per Worker. Each Worker instantiates one protocol Node for one channel
+One subsection per Worker. Each Worker instantiates one protocol Raft for one channel
 direction.
 
 ```toml
 [workers.foo-recv]
-channel_id = "tide-documents"
-recv_backend = "my-gcs"
-send_backend = "local-relay"
+channel = "tideway-documents"
+upper_dock = "my-gcs"
+lower_dock = "local-relay"
 poll_interval_seconds = 5
 
 [workers.foo-send]
-channel_id = "tide-documents"
-recv_backend = "local-relay"
-send_backend = "my-gcs"
+channel = "tideway-documents"
+upper_dock = "local-relay"
+lower_dock = "my-gcs"
 poll_interval_seconds = 5
 ```
 
 - Worker keys (e.g. `foo-recv`) are arbitrary identifiers, unique within the config
   file. They serve as the Worker's identity in logs and telemetry.
-- `channel_id` — the full channel identifier including protocol prefix (e.g.
-  `tide-documents`). The protocol is dispatched from this prefix per the protocol
+- `channel` — the full channel identifier including protocol prefix (e.g.
+  `tideway-documents`). The protocol is dispatched from this prefix per the protocol
   registry.
-- `recv_backend` and `send_backend` reference backend keys defined in `[backends]`.
-  They may be the same backend (single-provider hop) or different backends
+- `upper_dock` and `lower_dock` reference Dock keys defined in `[docks]`.
+  They may be the same Dock (single-provider hop) or different Docks
   (cross-provider hop).
 
 ---
@@ -173,8 +173,8 @@ the Agent Config file directly.
 
 The JSON delivered to a Worker's stdin contains:
 
-- The worker's own config subsection (channel_id, poll_interval, etc.)
-- The resolved backend configs for its `recv_backend` and `send_backend`
+- The worker's own config subsection (channel, poll_interval, etc.)
+- The resolved Dock configs for its `upper_dock` and `lower_dock`
 - The worker's assigned identity key (for log and telemetry attribution)
 
 Workers MUST read and parse their config from stdin before beginning any protocol
@@ -197,7 +197,7 @@ or unexpected clean exit).
 
 #### Backoff
 
-Restarts use exponential backoff to avoid hammering a backend that is causing
+Restarts use exponential backoff to avoid hammering a Dock that is causing
 repeated failures:
 
 | Restart attempt | Delay before next spawn |
@@ -223,7 +223,7 @@ If a Worker accumulates 5 threshold-qualifying crashes, it enters **degraded sta
 
 - The Agent continues restarting the Worker (with backoff).
 - The Agent emits a `worker.degraded` telemetry event (distinct from `worker.restarted`).
-- The degraded state is reflected in the telemetry slot blob for the host.
+- The degraded state is reflected in the telemetry Waterway blob for the host.
 
 The crash counter and degraded state reset after the Worker runs continuously for
 5 minutes without exiting.
@@ -278,7 +278,7 @@ when relaying Worker events (no field stripping).
 When `format = "text"`, the Agent renders each event as a human-readable line:
 
 ```
-2026-03-17T14:23:00Z [info] [foo-recv] worker.started channel_id=tide-documents pid=12345
+2026-03-17T14:23:00Z [info] [foo-recv] worker.started channel=tideway-documents pid=12345
 ```
 
 ### Agent Lifecycle Events
@@ -312,7 +312,7 @@ Workers emit the following events to their own stdout (which the Agent captures)
 | `worker.started` | Worker has parsed config and is beginning protocol activity |
 | `worker.poll` | Completion of a poll cycle (debug level; may be suppressed at info) |
 | `worker.state_transition` | Protocol state machine changed state |
-| `worker.storage_error` | A backend operation returned an error |
+| `worker.storage_error` | A Dock operation returned an error |
 | `worker.storage_ok` | Recovery after a previous storage error |
 
 Workers MUST NOT emit events about their own lifecycle (spawn, exit, restart) — those
@@ -322,36 +322,36 @@ are owned by the Agent.
 
 ## Telemetry Participation
 
-### Slot Ownership
+### Waterway Ownership
 
-The Agent owns exactly one slot in the `telemetry-` channel. No Worker writes to the
-telemetry channel directly. The slot name is derived from `node_id`.
+The Agent owns exactly one Waterway in the `telemetry-` channel. No Worker writes to the
+telemetry channel directly. The Waterway name is derived from `raft_id`.
 
 ### Write Triggers
 
-The Agent rewrites its telemetry slot on two triggers:
+The Agent rewrites its telemetry Waterway on two triggers:
 
 1. **Event-driven:** any Worker lifecycle transition (spawned, exited, restarted,
-   degraded, recovered) causes an immediate slot rewrite.
-2. **Periodic:** the Agent rewrites the slot on a fixed interval
+   degraded, recovered) causes an immediate Waterway rewrite.
+2. **Periodic:** the Agent rewrites the Waterway on a fixed interval
    (`telemetry_refresh_interval_seconds`) even if no lifecycle event has occurred.
-   This allows external monitors to detect a dead Agent by observing a stale slot.
+   This allows external monitors to detect a dead Agent by observing a stale Waterway.
 
 ### Telemetry Blob Schema
 
-The blob written to the `telemetry-` slot is a JSON object:
+The blob written to the `telemetry-` Waterway is a JSON object:
 
 ```json
 {
   "schema_version": 1,
-  "node_id": "<agent node_id>",
+  "raft_id": "<agent raft_id>",
   "agent_version": "<implementation version string>",
   "agent_started_at": "<ISO8601>",
   "reported_at": "<ISO8601>",
   "workers": [
     {
       "worker_id": "<worker key from config>",
-      "channel_id": "<full channel_id>",
+      "channel": "<full channel>",
       "state": "<state>",
       "pid": 12345,
       "started_at": "<ISO8601 | null>",
@@ -385,17 +385,17 @@ monitors to detect a hung Worker (alive but silent) as distinct from a crashed W
 
 ## Security Considerations
 
-- The Agent Config file contains backend credentials. It SHOULD be readable only by
+- The Agent Config file contains Dock credentials. It SHOULD be readable only by
   the user account running the Agent (e.g. mode `0600`).
 - Worker config is delivered via stdin at spawn time. It MUST NOT be written to disk
   as a temporary file.
-- Workers MUST NOT hold backend credentials beyond what is required for their own
-  two-backend operation. Workers receive only their own backend configs, not the full
-  backend map.
-- The Agent MUST NOT log backend credentials at any log level.
+- Workers MUST NOT hold Dock credentials beyond what is required for their own
+  two-Dock operation. Workers receive only their own Dock configs, not the full
+  Dock map.
+- The Agent MUST NOT log Dock credentials at any log level.
 - Telemetry blobs are plaintext and visible to anyone with access to the telemetry
-  storage backend. They MUST NOT contain credentials, channel payload content, or
-  the shared secret. They MAY contain `node_id`, `worker_id`, `channel_id`,
+  storage Dock. They MUST NOT contain credentials, channel payload content, or
+  the shared secret. They MAY contain `raft_id`, `worker_id`, `channel`,
   timestamps, and state values.
 
 ---
@@ -404,8 +404,8 @@ monitors to detect a hung Worker (alive but silent) as distinct from a crashed W
 
 | Document | Relationship |
 |----------|-------------|
-| `channel-provider.md` | Defines the ChannelProvider interface that Workers use for all backend operations |
-| `protocol-registry.md` | Defines how Workers dispatch protocol behavior from `channel_id` prefix |
+| `channel-provider.md` | Defines the DockProvider interface that Workers use for all Dock operations |
+| `protocol-registry.md` | Defines how Workers dispatch protocol behavior from `channel` prefix |
 | `heartbeat.md` | Workers participate in the heartbeat protocol independently of the Agent; the Agent does not mediate heartbeat activity |
 | `telemetry.md` | Defines the `telemetry-` channel semantics; this document extends it with the Agent blob schema |
 | `observability.md` | Provides the overview of the two-layer observability model (heartbeat + telemetry) |

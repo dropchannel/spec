@@ -1,8 +1,8 @@
 # Protocol Registry
 
-A DropChannel node is a protocol-multiplexing forwarder. The protocol governing a
+A DropChannel Raft is a protocol-multiplexing forwarder. The protocol governing a
 physical pipeline is determined by the channel name prefix — the substring before the
-first `-` in the channel ID. The node reads the prefix on startup, selects the
+first `-` in the channel ID. The Raft reads the prefix on startup, selects the
 appropriate state machine, and runs it. The prefix is metadata; it is never part of the
 encrypted payload.
 
@@ -12,18 +12,21 @@ encrypted payload.
 
 | Prefix | Protocol | Spec | Semantics |
 |--------|----------|------|-----------|
-| `tide-` | Tide | [`tide-protocol`](https://github.com/dropchannel/tide-protocol) | Hold-and-cascade: blob accumulates at every hop during forward pass; terminating endpoint's read triggers deletion cascade backward through the chain. Structural backpressure; implicit delivery confirmation. |
+| `tideway-` | Tideway | [`tideway-protocol`](https://github.com/dropchannel/tideway-protocol) | Hold-and-cascade: blob accumulates at every hop during forward pass; terminating endpoint's read triggers deletion cascade backward through the chain. Structural backpressure; implicit delivery confirmation. |
+| `riverway-` | Riverway | [`riverway-protocol`](https://github.com/dropchannel/riverway-protocol) | Continuous, unidirectional, overwrite-always, no ACK. |
+| `telemetry-` | Riverway | [telemetry.md](telemetry.md) | Observability side-channel. Each participant writes a self-describing state blob. One shared channel per deployment; one Waterway per participant. No ACK, no backpressure, plaintext. |
+| `heartbeat-` | Meta Waterway | [heartbeat.md](heartbeat.md) | Per-hop liveness chain. Rafts relay upstream heartbeat content forward; clients write status signals. Operates on meta Waterways alongside primary payload Waterways. Plaintext. |
 
 ---
 
 ## Dispatch Rules
 
 **Prefix extraction.** The protocol prefix is the substring of the channel ID up to and
-including the first `-`. A channel ID of `tide-commands` has prefix `tide-`; a channel
-ID of `tide-commands` has prefix `tide-`.
+including the first `-`. A channel ID of `tideway-commands` has prefix `tideway-`; a channel
+ID of `riverway-telemetry` has prefix `riverway-`.
 
-**Unrecognized prefix: halt and log.** If a node encounters a channel ID whose prefix
-does not match any registered protocol, the node halts and logs the unrecognized prefix.
+**Unrecognized prefix: halt and log.** If a Raft encounters a channel ID whose prefix
+does not match any registered protocol, the Raft halts and logs the unrecognized prefix.
 It does not skip, apply a default protocol, or continue silently. Silent continuation on
 an unrecognized prefix would mask misconfiguration and risk data loss or corruption.
 
@@ -35,12 +38,18 @@ followed by `-`.
 
 ## Protocol Selection Rationale
 
-**Tide** is the correct choice when:
+**Tideway** is the correct choice when:
 
 - Each message must be confirmed delivered before the next can be sent
 - The pipeline carries commands, file transfers, or discrete task handoffs
 - Backpressure is desirable — the producer should block until the consumer has taken the
   previous message
+
+**Riverway** is the correct choice when:
+
+- Delivery confirmation is not required
+- Continuous or frequent writes should not block on consumer availability
+- Overwrite semantics are acceptable (most recent value wins)
 
 ---
 
@@ -53,8 +62,8 @@ A new protocol requires:
 2. A registered prefix in this file, with a link to the spec repo.
 3. A state machine implementation in each runtime that wishes to support the protocol
    (e.g. `dropchannel-py`).
-4. The state machine must operate exclusively through the `ChannelProvider` interface.
+4. The state machine must operate exclusively through the `DockProvider` interface.
    See [`channel-provider.md`](channel-provider.md).
 
 A protocol prefix must be a lowercase ASCII string containing no `-` characters, ending
-with `-` as the channel ID delimiter. Examples: `tide-`, `telemetry-`, `heartbeat-`.
+with `-` as the channel ID delimiter. Examples: `tideway-`, `telemetry-`, `heartbeat-`.

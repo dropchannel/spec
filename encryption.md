@@ -1,7 +1,7 @@
 # Encryption
 
 All payload content in DropChannel is end-to-end encrypted between endpoints. The relay
-and any intermediate nodes store and forward opaque blobs only. No participant in the
+and any intermediate Rafts store and forward opaque blobs only. No participant in the
 pipeline other than the two endpoints holds or has access to the shared secret.
 
 ---
@@ -34,7 +34,7 @@ by AES-GCM and included in the ciphertext bytes as returned by the algorithm.
 
 The shared secret is a 256-bit (32-byte) pre-shared key (PSK) distributed out-of-band
 between the two endpoint operators. It is never transmitted through the relay or any
-intermediate node.
+intermediate Raft.
 
 Both directions of a channel use the same shared key.
 
@@ -49,7 +49,7 @@ Both directions of a channel use the same shared key.
   at all realistic message volumes.
 - The relay's transport security (e.g. HTTPS) is additive. Confidentiality does not
   depend on it — termination at the relay does not expose plaintext.
-- **The encryption guarantee is independent of storage security.** Because nodes and
+- **The encryption guarantee is independent of storage security.** Because Rafts and
   clients are the hard targets (see [`security-model.md`](security-model.md)) and
   storage is the primary attack surface, the encryption layer is specifically designed
   to hold even against a fully compromised storage provider. An attacker with complete
@@ -59,7 +59,7 @@ Both directions of a channel use the same shared key.
 
 **Known gap — replay attacks.** The current wire format does not include a sequence
 number or other nonce-freshness binding in the authenticated additional data (AAD). A
-captured valid ciphertext blob can be re-inserted into an empty slot and will pass
+captured valid ciphertext blob can be re-inserted into an empty Waterway and will pass
 AES-GCM authentication at the receiving endpoint. Adding a monotonically increasing
 sequence number to the AAD field would close this gap and is a candidate for a future
 wire format revision.
