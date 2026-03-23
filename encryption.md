@@ -1,8 +1,8 @@
 # Encryption
 
-All payload content in DropChannel is end-to-end encrypted between endpoints. The relay
-and any intermediate Rafts store and forward opaque blobs only. No participant in the
-pipeline other than the two endpoints holds or has access to the shared secret.
+All payload content in DropChannel is end-to-end encrypted between endpoints. Only
+opaque blobs are stored on Docks and transported by Rafts. No participant in a
+Waterway other than the two endpoints holds or has access to the shared secret.
 
 ---
 

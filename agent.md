@@ -23,7 +23,7 @@ do, not how they are built in any specific runtime.
 |------|------------|
 | **Agent** | The long-running host-level supervisor process. One per physical host. |
 | **Worker** | A subprocess spawned by the Agent to perform forwarding for a single channel. One Worker per configured channel direction. |
-| **Raft** | The protocol-level concept: a single forwarding hop in a Tideway (or other protocol) pipeline. A Worker instantiates one Raft. |
+| **Raft** | The protocol-level concept: a single forwarding hop in a Waterway (of any DropChannel protocol). A Worker instantiates one Raft. |
 | **Agent Config** | The single configuration file owned by the Agent for the entire host. |
 | **Dock** | A named DockProvider configuration. Defined once in Agent Config, referenced by Workers. |
 
@@ -42,8 +42,8 @@ The Agent is responsible for:
    Workers.
 3. **Log aggregation** — capturing structured output from Workers and writing a unified
    log for the host.
-4. **Telemetry participation** — maintaining the host's single Waterway in the `telemetry-`
-   channel, representing the aggregate state of all Workers.
+4. **Telemetry participation** — maintaining the host's single `telemetry-` Waterway
+   in each Channel, representing the aggregate state of all Workers in that Channel.
 5. **Signal handling** — responding to OS signals for graceful shutdown and config reload.
 
 ---
@@ -135,27 +135,31 @@ Dock keys (e.g. `my-gcs`) are arbitrary identifiers, unique within the config fi
 
 #### `[workers]`
 
-One subsection per Worker. Each Worker instantiates one protocol Raft for one channel
+One subsection per Worker. Each Worker instantiates one protocol Raft for one Waterway
 direction.
 
 ```toml
-[workers.foo-recv]
-channel = "tideway-documents"
-upper_dock = "my-gcs"
-lower_dock = "local-relay"
+[workers.documents-recv]
+channel           = "documents"
+waterway          = "tideway-a-to-b"
+upper_dock        = "my-gcs"
+lower_dock        = "local-relay"
 poll_interval_seconds = 5
 
-[workers.foo-send]
-channel = "tideway-documents"
-upper_dock = "local-relay"
-lower_dock = "my-gcs"
+[workers.documents-send]
+channel           = "documents"
+waterway          = "tideway-b-to-a"
+upper_dock        = "local-relay"
+lower_dock        = "my-gcs"
 poll_interval_seconds = 5
 ```
 
-- Worker keys (e.g. `foo-recv`) are arbitrary identifiers, unique within the config
-  file. They serve as the Worker's identity in logs and telemetry.
-- `channel` — the full channel identifier including protocol prefix (e.g.
-  `tideway-documents`). The protocol is dispatched from this prefix per the protocol
+- Worker keys (e.g. `documents-recv`) are arbitrary identifiers, unique within the
+  config file. They serve as the Worker's identity in logs and telemetry.
+- `channel` — the Channel name: the bare namespace identifying the path between the two
+  endpoints (e.g. `documents`). Contains no protocol prefix.
+- `waterway` — the Waterway name within that Channel, including the protocol prefix
+  (e.g. `tideway-a-to-b`). The protocol is dispatched from this prefix per the protocol
   registry.
 - `upper_dock` and `lower_dock` reference Dock keys defined in `[docks]`.
   They may be the same Dock (single-provider hop) or different Docks
@@ -173,7 +177,7 @@ the Agent Config file directly.
 
 The JSON delivered to a Worker's stdin contains:
 
-- The worker's own config subsection (channel, poll_interval, etc.)
+- The worker's own config subsection (channel, waterway, poll_interval, etc.)
 - The resolved Dock configs for its `upper_dock` and `lower_dock`
 - The worker's assigned identity key (for log and telemetry attribution)
 
@@ -185,7 +189,7 @@ their core configuration.
 
 Once running, a Worker:
 
-- Executes the protocol state machine for its assigned channel and protocol.
+- Executes the protocol state machine for its assigned Waterway and protocol.
 - Emits structured JSON log lines to its own stdout at appropriate points (see
   [Worker Telemetry Emission](#worker-telemetry-emission)).
 - Runs indefinitely until terminated by the Agent or until it exits due to an error.
@@ -278,7 +282,7 @@ when relaying Worker events (no field stripping).
 When `format = "text"`, the Agent renders each event as a human-readable line:
 
 ```
-2026-03-17T14:23:00Z [info] [foo-recv] worker.started channel=tideway-documents pid=12345
+2026-03-17T14:23:00Z [info] [documents-recv] worker.started channel=documents waterway=tideway-a-to-b pid=12345
 ```
 
 ### Agent Lifecycle Events
@@ -351,7 +355,8 @@ The blob written to the `telemetry-` Waterway is a JSON object:
   "workers": [
     {
       "worker_id": "<worker key from config>",
-      "channel": "<full channel>",
+      "channel": "<channel name>",
+      "waterway": "<waterway name>",
       "state": "<state>",
       "pid": 12345,
       "started_at": "<ISO8601 | null>",
@@ -395,7 +400,7 @@ monitors to detect a hung Worker (alive but silent) as distinct from a crashed W
 - The Agent MUST NOT log Dock credentials at any log level.
 - Telemetry blobs are plaintext and visible to anyone with access to the telemetry
   storage Dock. They MUST NOT contain credentials, channel payload content, or
-  the shared secret. They MAY contain `raft_id`, `worker_id`, `channel`,
+  the shared secret. They MAY contain `raft_id`, `worker_id`, `channel`, `waterway`,
   timestamps, and state values.
 
 ---
@@ -405,7 +410,7 @@ monitors to detect a hung Worker (alive but silent) as distinct from a crashed W
 | Document | Relationship |
 |----------|-------------|
 | `channel-provider.md` | Defines the DockProvider interface that Workers use for all Dock operations |
-| `protocol-registry.md` | Defines how Workers dispatch protocol behavior from `channel` prefix |
+| `protocol-registry.md` | Defines how Workers dispatch protocol behavior from `waterway` prefix |
 | `heartbeat.md` | Workers participate in the heartbeat protocol independently of the Agent; the Agent does not mediate heartbeat activity |
 | `telemetry.md` | Defines the `telemetry-` channel semantics; this document extends it with the Agent blob schema |
 | `observability.md` | Provides the overview of the two-layer observability model (heartbeat + telemetry) |

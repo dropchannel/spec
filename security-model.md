@@ -53,8 +53,8 @@ UUID is active, but contains no payload content and no routing secrets.
 Encryption of heartbeat content via a dedicated key (`DRIP_KEY`) is deferred to a future
 revision.
 
-**Channel IDs and Waterway names are not secret.** Any party with access to the shared
-storage location can observe which channel IDs and Waterway names exist. Payload content
+**Channel names and Waterway names are not secret.** Any party with access to the shared
+storage location can observe which Channel names and Waterway names exist. Payload content
 remains protected regardless.
 
 **Write guard atomicity is best-effort.** The one-blob-per-Waterway invariant is enforced

@@ -22,14 +22,11 @@ an existing blob — the caller is responsible for checking the return value.
 
 **`read(channel, waterway, filename) → bytes | None`**
 Retrieve and delete a blob from a Waterway in a single operation (consume-on-read). Returns
-the blob bytes if a blob is present, `None` if the Waterway is empty. Under the Tideway
-propagation protocol, only the terminating endpoint calls `read()` on an Upper-side Waterway. All
-other participants use `peek()`.
+the blob bytes if a blob is present, `None` if the Waterway is empty.
 
 **`peek(channel, waterway, filename) → bytes | None`**
 Retrieve a blob from a Waterway without consuming it. Returns the blob bytes if present,
-`None` if empty. The blob remains in the Waterway after this call. Used by Rafts and
-originating endpoints during the forward pass of the Tideway propagation protocol.
+`None` if empty. The blob remains in the Waterway after this call.
 
 **`exists(channel, waterway, filename) → bool`**
 Returns `True` if a blob is present in the Waterway, `False` if empty. The primary polling
@@ -37,9 +34,7 @@ operation during steady-state Raft operation — one `exists()` call per poll cy
 each steady-state mode.
 
 **`delete(channel, waterway, filename) → None`**
-Delete a blob from a Waterway. Idempotent — no error if the Waterway is already empty. Called
-during the Tideway ACK cascade by each Raft to clear its Upper-side Waterway after downstream
-confirmation is received.
+Delete a blob from a Waterway. Idempotent — no error if the Waterway is already empty.
 
 ### Meta Waterway operations
 
@@ -76,8 +71,7 @@ that has been returned to the caller must not be returned again by a subsequent 
 **Waterway isolation.** Primary Waterway operations must not affect meta Waterway state, and vice versa.
 
 **No cross-Waterway coupling.** No operation on one Waterway must cause a side effect on any other
-Waterway. (The Tideway ACK cascade is implemented by participants calling `delete()` explicitly,
-not by the provider.)
+Waterway.
 
 ---
 

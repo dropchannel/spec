@@ -47,7 +47,7 @@ Actual implementations live in sibling repositories (e.g., `dropchannel/dropchan
 
 **Four components:** Endpoint (encrypts/decrypts, holds SHARED_SECRET), Raft (crypto-blind forwarder), Dock (storage interface), Relay (Dock over HTTP).
 
-**Channel naming:** `{prefix}-{identifier}` — the prefix drives protocol dispatch. Registered prefixes: `tideway-`, `riverway-`, `telemetry-`, `heartbeat-`.
+**Channel and Waterway naming:** A Channel is a bare namespace (e.g. `chat`) with no protocol prefix. Waterways live inside Channels and carry the prefix: `{prefix}-{identifier}` (e.g. `tideway-bob`). A single Channel may contain multiple Waterways. The Waterway prefix drives protocol dispatch. Registered prefixes: `tideway-`, `riverway-`, `telemetry-`, `heartbeat-`.
 
 **Key design constraint:** Rafts must never hold encryption keys and must not have cryptographic library dependencies for payload operations. This is verifiable at the package level in conformant implementations.
 

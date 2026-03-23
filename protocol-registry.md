@@ -1,10 +1,10 @@
 # Protocol Registry
 
 A DropChannel Raft is a protocol-multiplexing forwarder. The protocol governing a
-physical pipeline is determined by the channel name prefix — the substring before the
-first `-` in the channel ID. The Raft reads the prefix on startup, selects the
-appropriate state machine, and runs it. The prefix is metadata; it is never part of the
-encrypted payload.
+Waterway is determined by the Waterway name prefix — the substring before the first `-`
+in the Waterway name. The Raft reads the prefix on startup, selects the appropriate
+state machine, and runs it. The prefix is metadata; it is never part of the encrypted
+payload.
 
 ---
 
@@ -12,7 +12,7 @@ encrypted payload.
 
 | Prefix | Protocol | Spec | Semantics |
 |--------|----------|------|-----------|
-| `tideway-` | Tideway | [`tideway-protocol`](https://github.com/dropchannel/tideway-protocol) | Hold-and-cascade: blob accumulates at every hop during forward pass; terminating endpoint's read triggers deletion cascade backward through the chain. Structural backpressure; implicit delivery confirmation. |
+| `tideway-` | Tideway | [`tideway-protocol`](https://github.com/dropchannel/tideway-protocol) | Turn-passing, fixed initiator at Upper-side, bidirectional on a single Waterway. Structural backpressure; implicit delivery confirmation via ACK cascade. |
 | `riverway-` | Riverway | [`riverway-protocol`](https://github.com/dropchannel/riverway-protocol) | Continuous, unidirectional, overwrite-always, no ACK. |
 | `telemetry-` | Riverway | [telemetry.md](telemetry.md) | Observability side-channel. Each participant writes a self-describing state blob. One shared channel per deployment; one Waterway per participant. No ACK, no backpressure, plaintext. |
 | `heartbeat-` | Meta Waterway | [heartbeat.md](heartbeat.md) | Per-hop liveness chain. Rafts relay upstream heartbeat content forward; clients write status signals. Operates on meta Waterways alongside primary payload Waterways. Plaintext. |
@@ -21,18 +21,18 @@ encrypted payload.
 
 ## Dispatch Rules
 
-**Prefix extraction.** The protocol prefix is the substring of the channel ID up to and
-including the first `-`. A channel ID of `tideway-commands` has prefix `tideway-`; a channel
-ID of `riverway-telemetry` has prefix `riverway-`.
+**Prefix extraction.** The protocol prefix is the substring of the Waterway name up to
+and including the first `-`. A Waterway named `tideway-commands` has prefix `tideway-`;
+a Waterway named `riverway-telemetry` has prefix `riverway-`.
 
-**Unrecognized prefix: halt and log.** If a Raft encounters a channel ID whose prefix
+**Unrecognized prefix: halt and log.** If a Raft encounters a Waterway name whose prefix
 does not match any registered protocol, the Raft halts and logs the unrecognized prefix.
 It does not skip, apply a default protocol, or continue silently. Silent continuation on
 an unrecognized prefix would mask misconfiguration and risk data loss or corruption.
 
-**No default protocol.** There is no fallback protocol for an unprefixed or
-unrecognized channel ID. Every valid channel ID must begin with a registered prefix
-followed by `-`.
+**No default protocol.** There is no fallback protocol for an unprefixed or unrecognized
+Waterway name. Every valid Waterway name must begin with a registered prefix followed
+by `-`.
 
 ---
 
@@ -65,5 +65,5 @@ A new protocol requires:
 4. The state machine must operate exclusively through the `DockProvider` interface.
    See [`channel-provider.md`](channel-provider.md).
 
-A protocol prefix must be a lowercase ASCII string containing no `-` characters, ending
-with `-` as the channel ID delimiter. Examples: `tideway-`, `telemetry-`, `heartbeat-`.
+A Waterway prefix must be a lowercase ASCII string containing no `-` characters, ending
+with `-` as the Waterway name delimiter. Examples: `tideway-`, `telemetry-`, `heartbeat-`.

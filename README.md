@@ -60,9 +60,9 @@ physical pipeline. Rafts are crypto-blind: they forward opaque bytes and perform
 cryptographic operations. A Raft has no SHARED_SECRET and no knowledge of message
 semantics.
 
-A Raft operates in exactly one direction on exactly one physical pipeline. It is pure
-forwarding infrastructure. Its behavior on any given channel is determined by the channel
-name prefix, which identifies the coordination protocol to apply.
+A Raft operates in exactly one direction on exactly one Waterway. It is pure
+forwarding infrastructure. Its behavior is determined by the Waterway name prefix,
+which identifies the coordination protocol to apply.
 
 ### Dock
 
@@ -107,44 +107,61 @@ forward pass.
 
 ## Channel Naming and Protocol Dispatch
 
-### Channel Names
+### Channels
 
-A channel name is a string composed of a **protocol prefix** and a **channel identifier**,
-separated by a hyphen:
+A Channel is a named path between two fixed endpoints. It is a pure namespace — an
+operator-chosen label with no embedded protocol or direction information:
+
+```
+{channel-name}
+```
+
+Examples: `chat`, `file-transfer`, `sensor-feed`
+
+A Channel may contain any number of Waterways simultaneously. All Waterways within a
+Channel connect the same two endpoints. A single Channel can carry independent Waterways
+with different protocols or directionalities — for example, a Tideway for turn-passing
+request/response alongside a Riverway for continuous status emission.
+
+### Waterways
+
+A Waterway is a named, protocol-typed flow within a Channel. Its name is composed of a
+**protocol prefix** and an **identifier**, separated by a hyphen:
 
 ```
 {prefix}-{identifier}
 ```
 
-Examples: `tideway-documents`, `riverway-telemetry`
+Examples: `tideway-bob`, `riverway-status`
 
-The prefix is the machine-readable protocol selector. A Raft reads the prefix of a
-channel name and instantiates the appropriate coordination protocol handler for that
-channel. No additional configuration is required.
+The prefix is the machine-readable protocol selector. A Raft reads the Waterway name
+prefix and instantiates the appropriate coordination protocol handler. No additional
+configuration is required for protocol dispatch.
 
-The identifier is an arbitrary string chosen by the channel operators. It must be unique
-within the scope of the storage provider it uses.
+The identifier is an arbitrary string chosen by the Channel operators. It must be unique
+within the Channel's scope on the storage provider it uses.
 
 ### Protocol Registry
 
-The following prefixes are defined. Each maps to an authoritative protocol specification:
+The following Waterway prefixes are defined. Each maps to an authoritative protocol
+specification:
 
 | Prefix | Protocol | Semantics | Spec |
 |--------|----------|-----------|------|
-| `tideway-` | Tideway | Store-and-forward, backpressure, back-cascade ACK | [dropchannel/tideway-protocol](https://github.com/dropchannel/tideway-protocol) |
-| `riverway-` | Riverway | Store-and-forward, no back-pressure, no ACK | [dropchannel/riverway-protocol](https://github.com/dropchannel/riverway-protocol) |
-| `telemetry-` | Riverway | Observability side-channel. Each participant writes a self-describing state blob to a shared channel, one Waterway per participant keyed by participant ID. No ACK, no backpressure, plaintext. Consumed by external monitoring tools. | [telemetry.md](telemetry.md) |
+| `tideway-` | Tideway | Turn-passing, backpressure, bidirectional on a single Waterway | [dropchannel/tideway-protocol](https://github.com/dropchannel/tideway-protocol) |
+| `riverway-` | Riverway | Continuous, unidirectional, overwrite-always, no ACK | [dropchannel/riverway-protocol](https://github.com/dropchannel/riverway-protocol) |
+| `telemetry-` | Riverway | Observability side-channel. Each participant writes a self-describing state blob to a shared Waterway, one Waterway per participant keyed by participant ID. No ACK, no backpressure, plaintext. Consumed by external monitoring tools. | [telemetry.md](telemetry.md) |
 | `heartbeat-` | Meta Waterway | Per-hop liveness chain operating on meta Waterways alongside primary payload Waterways. Rafts relay upstream heartbeat content forward; clients write status signals. Plaintext. | [heartbeat.md](heartbeat.md) |
 
 The `telemetry-` and `heartbeat-` prefixes are reserved for the observability layer.
 They are listed here for completeness and prefix reservation — a conformant Raft
-does not dispatch payload traffic on these channels. See `spec/observability.md`.
+does not dispatch payload traffic on these Waterways. See `spec/observability.md`.
 
 ### Unrecognized Prefixes
 
-A conformant Raft encountering an unrecognized channel name prefix **must** halt
-processing on that channel, log the unrecognized prefix, and continue processing other
-channels unaffected. It must not silently skip, must not guess, and must not apply a
+A conformant Raft encountering an unrecognized **Waterway name prefix** must halt
+processing on that Waterway, log the unrecognized prefix, and continue processing other
+Waterways unaffected. It must not silently skip, must not guess, and must not apply a
 default protocol.
 
 ---
@@ -176,7 +193,7 @@ system requires only that Rafts cannot derive plaintext from the blobs they forw
 DropChannel is designed to be secure against a **compromised forwarding layer**. An
 adversary with full read/write access to a storage provider learns only:
 
-- That a channel exists (channel ID is visible)
+- That a channel exists (channel name is visible)
 - Blob sizes and timing (metadata)
 - Nothing about payload content
 
@@ -192,7 +209,7 @@ following:
 
 - It implements the DockProvider interface with the exact semantics defined above
 - Its Raft component performs no cryptographic operations on payload content
-- Its Raft component dispatches coordination protocol by channel name prefix as defined above
+- Its Raft component dispatches coordination protocol by Waterway name prefix as defined above
 - Its Raft component halts on unrecognized prefixes rather than guessing or defaulting
 - Its Endpoint component is the exclusive holder of the SHARED_SECRET for its channel
 - It does not require inbound network connections at any component
