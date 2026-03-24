@@ -409,7 +409,7 @@ monitors to detect a hung Worker (alive but silent) as distinct from a crashed W
 
 | Document | Relationship |
 |----------|-------------|
-| `channel-provider.md` | Defines the DockProvider interface that Workers use for all Dock operations |
+| `dock-provider.md` | Defines the DockProvider interface that Workers use for all Dock operations |
 | `protocol-registry.md` | Defines how Workers dispatch protocol behavior from `waterway` prefix |
 | `heartbeat.md` | Workers participate in the heartbeat protocol independently of the Agent; the Agent does not mediate heartbeat activity |
 | `telemetry.md` | Defines the `telemetry-` channel semantics; this document extends it with the Agent blob schema |

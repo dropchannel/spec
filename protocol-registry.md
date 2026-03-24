@@ -63,7 +63,7 @@ A new protocol requires:
 3. A state machine implementation in each runtime that wishes to support the protocol
    (e.g. `dropchannel-py`).
 4. The state machine must operate exclusively through the `DockProvider` interface.
-   See [`channel-provider.md`](channel-provider.md).
+   See [`dock-provider.md`](dock-provider.md).
 
 A Waterway prefix must be a lowercase ASCII string containing no `-` characters, ending
 with `-` as the Waterway name delimiter. Examples: `tideway-`, `telemetry-`, `heartbeat-`.

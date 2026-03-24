@@ -34,7 +34,7 @@ Actual implementations live in sibling repositories (e.g., `dropchannel/dropchan
 | File | Owns |
 |------|------|
 | `README.md` | System overview, component definitions, DockProvider interface summary, protocol registry, conformance rules |
-| `channel-provider.md` | Full DockProvider interface: 5 primary Waterway ops + 4 meta Waterway ops, contracts, Waterway naming |
+| `dock-provider.md` | Full DockProvider interface: 5 primary Waterway ops + 4 meta Waterway ops, contracts, Waterway naming |
 | `encryption.md` | AES-256-GCM wire format, key distribution, security properties |
 | `security-model.md` | Trust boundaries, threat model, open items |
 | `protocol-registry.md` | Registered protocols, dispatch rules, how to add a protocol |

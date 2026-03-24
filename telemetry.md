@@ -3,7 +3,7 @@
 **Status:** Draft
 **Prefix:** `telemetry-`
 **Protocol:** Riverway (overwrite-always, no ACK)
-**Related:** `protocol-registry.md`, `riverway-protocol/README.md`, `channel-provider.md`
+**Related:** `protocol-registry.md`, `riverway-protocol/README.md`, `dock-provider.md`
 
 ---
 
