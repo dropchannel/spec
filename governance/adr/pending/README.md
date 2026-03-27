@@ -1,8 +1,8 @@
-# governance/pending/
+# governance/adr/pending/
 
 This directory holds documents that are **decided but not yet actionable** — content that has been worked through and is considered correct, but cannot be committed to its permanent home until a specific condition is met.
 
-"Pending" in this project means waiting on a defined gate, not waiting on further design work. Documents here are not drafts. If a document is still being worked out, it doesn't belong here yet — it belongs in `governance/wip/`.
+"Pending" in this project means waiting on a defined gate, not waiting on further design work. Documents here are not drafts. If a document is still being worked out, it doesn't belong here yet — it belongs in `governance/adr/wip/`.
 
 ---
 
@@ -15,7 +15,7 @@ This directory holds documents that are **decided but not yet actionable** — c
 
 ## What does not belong here
 
-- Documents still under active design — keep those in `governance/wip/` until decisions are settled
+- Documents still under active design — keep those in `governance/adr/wip/` until decisions are settled
 - Permanent reference material that is already actionable — commit it directly to its home
 - Ephemeral working notes — these don't need to be tracked at all
 
@@ -28,7 +28,7 @@ Each document here has a named condition under which it is promoted to its perma
 | File | Permanent home | Promotion condition |
 |------|----------------|---------------------|
 | `ADR-XXXX-versioning-strategy.md` | `governance/adr/ADR-NNNN-versioning-strategy.md` | Org-wide 1.0.0 remediation complete; assign ADR number at commit time |
-| `versioning.md` | `spec/conventions/versioning.md` | Org-wide 1.0.0 remediation complete |
+| `versioning.md` | `governance/conventions/versioning.md` | Org-wide 1.0.0 remediation complete |
 | `versioning-remediation-checklist.md` | Close/archive (or convert to GitHub Issue) | All checklist items complete |
 
 ---

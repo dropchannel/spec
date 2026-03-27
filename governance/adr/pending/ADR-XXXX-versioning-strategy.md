@@ -13,11 +13,11 @@ The DropChannel org contains three categories of repository, each with a distinc
 
 - **Protocol repos** (`tideway-protocol/`, `riverway-protocol/`, and any future protocol repos) — define wire behaviour; versioned independently of each other and of any implementation
 - **Implementation repos** (`dropchannel-py/`, and future language implementations) — package one or more protocol handlers; versioned on their own release cadence
-- **Org-level spec** (`spec/`) — living conceptual documentation; not independently versioned
+- **Org-level spec** (`dropchannel/`) — living conceptual documentation; not independently versioned
 
-This ADR defines the versioning strategy that governs the org from the 1.0.0 release onwards. It also records the one-time remediation required to bring existing repositories to a 1.0.0-ready state; the detailed remediation checklist is maintained separately at `governance/pending/versioning-remediation-checklist.md`.
+This ADR defines the versioning strategy that governs the org from the 1.0.0 release onwards. It also records the one-time remediation required to bring existing repositories to a 1.0.0-ready state; the detailed remediation checklist is maintained separately at `governance/adr/pending/versioning-remediation-checklist.md`.
 
-Operational conventions (changelog templates, `history/` file formats, `PROTOCOLS.md` format) are defined in `governance/pending/versioning.md`.
+Operational conventions (changelog templates, `history/` file formats, `PROTOCOLS.md` format) are defined in `governance/adr/pending/versioning.md`.
 
 ---
 
@@ -96,17 +96,17 @@ The tag is the canonical VCS anchor for a version. A version is not considered p
 
 ### 1.5 Changelog and History Artefacts
 
-Each protocol and implementation repo maintains a `CHANGELOG.md` at root and per-version `history/v<version>.md` files. Format requirements and templates are defined in `governance/pending/versioning.md`.
+Each protocol and implementation repo maintains a `CHANGELOG.md` at root and per-version `history/v<version>.md` files. Format requirements and templates are defined in `governance/adr/pending/versioning.md`.
 
 ### 1.6 Protocol Compatibility Manifest (`PROTOCOLS.md`)
 
-Each implementation repo carries a `PROTOCOLS.md` file at the repository root declaring which protocol version each handler targets. Format and update rules are defined in `governance/pending/versioning.md`.
+Each implementation repo carries a `PROTOCOLS.md` file at the repository root declaring which protocol version each handler targets. Format and update rules are defined in `governance/adr/pending/versioning.md`.
 
-### 1.7 Org-Level `spec/` Repo
+### 1.7 Org-Level `dropchannel/` Repo
 
-`spec/` contains living conceptual documentation. It is not independently versioned and carries no `CHANGELOG.md` or `history/` directory.
+`dropchannel/` contains living conceptual documentation. It is not independently versioned and carries no `CHANGELOG.md` or `history/` directory.
 
-Where `spec/` content describes behaviour that is protocol-specific, it links to the relevant protocol repo rather than embedding a version claim inline. `spec/` is updated when conceptual understanding changes, not on a protocol release cadence.
+Where `dropchannel/` content describes behaviour that is protocol-specific, it links to the relevant protocol repo rather than embedding a version claim inline. `dropchannel/` is updated when conceptual understanding changes, not on a protocol release cadence.
 
 ### 1.8 ADR Index Structure
 
@@ -140,7 +140,7 @@ None of the pre-1.0.0 version history will be retroactively tagged. The existing
 
 ### 2.2 Remediation
 
-A detailed remediation checklist covering all repos is maintained at `governance/pending/versioning-remediation-checklist.md`. All items in that checklist must be completed as a prerequisite to the org-wide 1.0.0 release.
+A detailed remediation checklist covering all repos is maintained at `governance/adr/pending/versioning-remediation-checklist.md`. All items in that checklist must be completed as a prerequisite to the org-wide 1.0.0 release.
 
 ---
 
@@ -153,7 +153,7 @@ A detailed remediation checklist covering all repos is maintained at `governance
 - Protocol versions can be referenced stably across repos and external documentation using git tags.
 - ADRs are findable by number and date without requiring knowledge of which spec version they relate to.
 - A second implementation language can adopt the same conventions with no structural invention required.
-- The `spec/` repo becomes genuinely living — no version references to maintain or drift.
+- The `dropchannel/` repo becomes genuinely living — no version references to maintain or drift.
 - New protocol repos start at 1.0.0 with no pre-1.0 phase to navigate.
 
 ### What requires discipline

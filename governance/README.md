@@ -9,8 +9,10 @@ This directory contains the org-level decision record for DropChannel — the pa
 | Directory | Purpose |
 |-----------|---------|
 | [`adr/`](./adr/) | Numbered, accepted or resolved decisions on a known roadmap |
-| [`pending/`](./pending/) | Decided but not yet actionable — awaiting a named gate condition |
-| [`wip/`](./wip/) | Investigative — no direction selected yet |
+| [`adr/pending/`](./adr/pending/) | Decided but not yet actionable — awaiting a named gate condition |
+| [`adr/wip/`](./adr/wip/) | Investigative — no direction selected yet |
+| [`conventions/`](./conventions/) | Cross-repo conventions and naming standards |
+| [`standards/`](./standards/) | Formal standards and compliance requirements |
 
 ---
 
@@ -19,11 +21,11 @@ This directory contains the org-level decision record for DropChannel — the pa
 Documents move through the directories as decisions mature:
 
 ```
-wip/  →  pending/  →  adr/
+adr/wip/  →  adr/pending/  →  adr/
 ```
 
-- A document enters `wip/` when a question is worth tracking but no direction has been chosen.
-- It moves to `pending/` when a direction is chosen but the change cannot yet be executed.
+- A document enters `adr/wip/` when a question is worth tracking but no direction has been chosen.
+- It moves to `adr/pending/` when a direction is chosen but the change cannot yet be executed.
 - It moves to `adr/` when it is assigned a number and is on the active roadmap or complete.
 
 Not every investigation becomes an ADR. A `wip/` document may be closed without promotion if the question resolves without requiring a formal decision.

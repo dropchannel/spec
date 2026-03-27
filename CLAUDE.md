@@ -46,14 +46,14 @@ Actual implementations live in sibling repositories (e.g., `dropchannel/dropchan
 | File | Owns |
 |------|------|
 | `README.md` | System overview, component definitions, DockProvider interface summary, protocol registry, conformance rules |
-| `dock-provider.md` | Full DockProvider interface: 5 primary Waterway ops + 4 meta Waterway ops, contracts, Waterway naming |
-| `encryption.md` | AES-256-GCM wire format, key distribution, security properties |
-| `security-model.md` | Trust boundaries, threat model, open items |
-| `protocol-registry.md` | Registered protocols, dispatch rules, how to add a protocol |
-| `observability.md` | Two-layer observability overview (heartbeat vs. telemetry) |
-| `heartbeat.md` | Per-hop liveness protocol using meta Waterways |
-| `telemetry.md` | External monitoring side-channel: blob schema, topology reconstruction |
-| `agent.md` | Agent/Worker runtime: TOML config schema, worker lifecycle, backoff, telemetry participation |
+| `spec/dock-provider.md` | Full DockProvider interface: 5 primary Waterway ops + 4 meta Waterway ops, contracts, Waterway naming |
+| `spec/encryption.md` | AES-256-GCM wire format, key distribution, security properties |
+| `spec/security-model.md` | Trust boundaries, threat model, open items |
+| `spec/protocol-registry.md` | Registered protocols, dispatch rules, how to add a protocol |
+| `runtime/observability.md` | Two-layer observability overview (heartbeat vs. telemetry) |
+| `runtime/heartbeat.md` | Per-hop liveness protocol using meta Waterways |
+| `runtime/telemetry.md` | External monitoring side-channel: blob schema, topology reconstruction |
+| `runtime/agent.md` | Agent/Worker runtime: TOML config schema, worker lifecycle, backoff, telemetry participation |
 
 ## Architecture Summary
 
@@ -69,7 +69,7 @@ Actual implementations live in sibling repositories (e.g., `dropchannel/dropchan
 
 ## ADR format
 
-ADRs live in the [`spec`](https://github.com/dropchannel/spec) repo.
+ADRs live in the [`dropchannel`](https://github.com/dropchannel/dropchannel) repo.
 ADR numbers use 4-digit zero-padded format: `ADR-NNNN`.
 
 Standard sections and Format: See [governance/adr/TEMPLATE.md](governance/adr/TEMPLATE.md)
@@ -78,17 +78,17 @@ The three tiers:
 
 * **Full ADR** — load-bearing decisions where the Consequences section is the point. Write as individual `ADR-NNNN.md`.
 * **Short ADR** — clear rationale, fits in 2–3 paragraphs. Individual file.
-* **Log entry** — table row in the spec repo's ADR index is sufficient.
+* **Log entry** — table row in the `dropchannel` repo's ADR index is sufficient.
 
 Priority candidates for full ADR treatment: 0008, 0010, 0017, 0021, 0033.
 
 Individual ADR files (`ADR-0001.md` through `ADR-0035.md`) have not been written yet —
-the master index in the spec repo is the current extent of ADR content.
+the master index in the `dropchannel` repo is the current extent of ADR content.
 ADR-0036 and ADR-0037 have individual files.
 
 The 35 earlier ADRs have not been triaged into full / short / log-entry tiers.
 
-**Starting a new ADR-writing session:** provide the spec repo's ADR index,
+**Starting a new ADR-writing session:** provide the `dropchannel` repo's ADR index,
 then specify which ADRs to write and at what depth. Example:
 > "Read CLAUDE.md and the ADR index. Write full ADR documents for ADRs 0008, 0010,
 > and 0017. Use the standard ADR format: Title, Status, Context, Decision, Consequences."

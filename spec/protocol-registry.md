@@ -14,8 +14,8 @@ payload.
 |--------|----------|------|-----------|
 | `tideway-` | Tideway | [`tideway-protocol`](https://github.com/dropchannel/tideway-protocol) | Turn-passing, fixed initiator at Upper-side, bidirectional on a single Waterway. Structural backpressure; implicit delivery confirmation via ACK cascade. |
 | `riverway-` | Riverway | [`riverway-protocol`](https://github.com/dropchannel/riverway-protocol) | Continuous, unidirectional, overwrite-always, no ACK. |
-| `telemetry-` | Riverway | [telemetry.md](telemetry.md) | Observability side-channel. Each participant writes a self-describing state blob. One shared channel per deployment; one Waterway per participant. No ACK, no backpressure, plaintext. |
-| `heartbeat-` | Meta Waterway | [heartbeat.md](heartbeat.md) | Per-hop liveness chain. Rafts relay upstream heartbeat content forward; clients write status signals. Operates on meta Waterways alongside primary payload Waterways. Plaintext. |
+| `telemetry-` | Riverway | [telemetry.md](../runtime/telemetry.md) | Observability side-channel. Each participant writes a self-describing state blob. One shared channel per deployment; one Waterway per participant. No ACK, no backpressure, plaintext. |
+| `heartbeat-` | Meta Waterway | [heartbeat.md](../runtime/heartbeat.md) | Per-hop liveness chain. Rafts relay upstream heartbeat content forward; clients write status signals. Operates on meta Waterways alongside primary payload Waterways. Plaintext. |
 
 ---
 

@@ -3,7 +3,7 @@
 **Status:** Draft  
 **Deciders:** Paul Czajka  
 **Date:** [to be set at commit time]  
-**Governs:** `spec`, `dropchannel-py`
+**Governs:** `dropchannel`, `dropchannel-py`
 
 ---
 
@@ -52,7 +52,7 @@ Collapsing "DockProvider" and "Dock" into a single term eliminates a distinction
 
 ## Consequences
 
-- `dock-provider.md` in the `spec` repo is renamed to `dock.md`.
+- `dock-provider.md` in the `dropchannel` repo is renamed to `dock.md`.
 - All spec references to "DockProvider" as a conceptual term are updated to "Dock."
 - "Relay" and "Server" are removed from the spec vocabulary. Existing references in implementation code (e.g. `dropchannel-server` package in `dropchannel-py`) are not immediately renamed — that refactor is deferred until the `HttpDock` API contract stabilizes, at which point the server component is a candidate for extraction to a separate repository.
 - The `dropchannel-channel` package in `dropchannel-py` is renamed to `dropchannel-dock`. The package contains Dock interface and implementation code only; the `-channel` name was overbroad and implied Channel-level concerns it does not own. Both `dropchannel-raft` and `dropchannel-endpoint` depend on this package.

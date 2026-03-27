@@ -1,4 +1,4 @@
-# governance/wip/
+# governance/adr/wip/
 
 This directory holds documents in active investigative or research phase — recorded analysis, identified concerns, and assessed options where **no direction has yet been selected**.
 
@@ -17,15 +17,15 @@ This directory holds documents in active investigative or research phase — rec
 
 ## What does not belong here
 
-- Documents where a direction has been chosen but action is deferred — those belong in `governance/pending/`
+- Documents where a direction has been chosen but action is deferred — those belong in `governance/adr/pending/`
 - Ephemeral scratch notes not worth preserving — those don't need to be tracked at all
 - Finalised decisions — those belong in `governance/adr/`
 
 ---
 
-## The distinction from `governance/pending/`
+## The distinction from `governance/adr/pending/`
 
-| | `wip/` | `pending/` |
+| | `adr/wip/` | `adr/pending/` |
 |---|--------|------------|
 | **Decision state** | No direction selected | Direction selected, not yet actionable |
 | **Content** | Analysis, research, options | Settled documents awaiting a gate condition |
@@ -37,4 +37,4 @@ A document graduates from `wip/` to `pending/` when a direction is chosen. It gr
 
 ## On graduation
 
-When a document in `wip/` reaches a decision point, move it to `governance/pending/` and add it to that directory's promotion table. Documents should not linger in `wip/` after a direction has been chosen — the distinction between "still thinking" and "decided but waiting" matters for anyone trying to understand the state of the project.
+When a document in `adr/wip/` reaches a decision point, move it to `governance/adr/pending/` and add it to that directory's promotion table. Documents should not linger in `adr/wip/` after a direction has been chosen — the distinction between "still thinking" and "decided but waiting" matters for anyone trying to understand the state of the project.
