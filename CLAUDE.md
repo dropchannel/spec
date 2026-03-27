@@ -8,9 +8,9 @@ This is the **authoritative system specification** for DropChannel — a multi-p
 
 Actual implementations live in sibling repositories (e.g., `dropchannel/dropchannel-py`). Individual protocol specifications live in their own repos (`dropchannel/tideway-protocol`, `dropchannel/riverway-protocol`).
 
-## Working in This Repo
+**Scope boundary:** Protocol-specific state machines do not belong here — they live in their own repos. If an edit belongs only in `dropchannel/tideway-protocol` or `dropchannel/riverway-protocol`, do not duplicate it here.
 
-**Starting a new session:** For a full context handoff, `HANDOFF.md` contains a complete system summary. For targeted work, paste or refer to the relevant spec file(s).
+## Working in This Repo
 
 **Spec files will need updating when:**
 
@@ -22,12 +22,24 @@ Actual implementations live in sibling repositories (e.g., `dropchannel/dropchan
 
 ## Working Rules
 
-* Spec files are source of truth. Implementation behavior defers to spec.
-* Do not retroactively reorganize committed files. Correct errors; don't restructure.
+* Do not retroactively reorganize committed files unless instructed. Correct errors; don't restructure.
 * Do not overclaim. Scope security assertions carefully:
   * Heartbeat metadata is plaintext.
   * "Shared storage" not "untrusted shared infrastructure".
 * One concern per file. Propose a new file rather than expanding an existing one's scope.
+* Cross-repo links (to other repos in the DropChannel org) use <https://github.com/dropchannel/> as the URL root. Intra-repo links use relative URLs.
+* When producing spec changes that add a new file, rename a component, or resolve a Known Gap, also update CLAUDE.md to reflect the new state.
+
+**Do not use retired terms.** Current vocabulary:
+
+| Term | Retired terms |
+|---|---|
+| Dock / DockProvider | ChannelProvider, channel-provider |
+| Waterway | slot, reach |
+| Raft | Node |
+| Channel | channel_id (as namespace) |
+| Riverway | Conveyer, Current |
+| Tideway | (none) |
 
 ## Spec File Map
 
