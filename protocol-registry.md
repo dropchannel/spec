@@ -1,10 +1,10 @@
 # Protocol Registry
 
-A DropChannel node is a protocol-multiplexing forwarder. The protocol governing a
-physical pipeline is determined by the channel name prefix — the substring before the
-first `-` in the channel ID. The node reads the prefix on startup, selects the
-appropriate state machine, and runs it. The prefix is metadata; it is never part of the
-encrypted payload.
+A DropChannel Raft is a protocol-multiplexing forwarder. The protocol governing a
+Waterway is determined by the Waterway name prefix — the substring before the first `-`
+in the Waterway name. The Raft reads the prefix on startup, selects the appropriate
+state machine, and runs it. The prefix is metadata; it is never part of the encrypted
+payload.
 
 ---
 
@@ -12,47 +12,44 @@ encrypted payload.
 
 | Prefix | Protocol | Spec | Semantics |
 |--------|----------|------|-----------|
-| `winch-` | Winch | [`winch-protocol`](https://github.com/dropchannel/winch-protocol) | Hold-and-cascade: blob accumulates at every hop during forward pass; terminating endpoint's read triggers deletion cascade backward through the chain. Structural backpressure; implicit delivery confirmation. |
-| `ring-` | Ring | `ring-protocol` (not yet created) | Rolling window, no ACK: producer overwrites oldest slot when window is full; consumer tracks read cursor; producer never stalls. Designed for streaming and telemetry use cases where individual entries are lossy by design. |
-| `piston-` | Piston | `piston-protocol` (not yet created) | TBD |
+| `tideway-` | Tideway | [`tideway-protocol`](https://github.com/dropchannel/tideway-protocol) | Turn-passing, fixed initiator at Upper-side, bidirectional on a single Waterway. Structural backpressure; implicit delivery confirmation via ACK cascade. |
+| `riverway-` | Riverway | [`riverway-protocol`](https://github.com/dropchannel/riverway-protocol) | Continuous, unidirectional, overwrite-always, no ACK. |
+| `telemetry-` | Riverway | [telemetry.md](telemetry.md) | Observability side-channel. Each participant writes a self-describing state blob. One shared channel per deployment; one Waterway per participant. No ACK, no backpressure, plaintext. |
+| `heartbeat-` | Meta Waterway | [heartbeat.md](heartbeat.md) | Per-hop liveness chain. Rafts relay upstream heartbeat content forward; clients write status signals. Operates on meta Waterways alongside primary payload Waterways. Plaintext. |
 
 ---
 
 ## Dispatch Rules
 
-**Prefix extraction.** The protocol prefix is the substring of the channel ID up to and
-including the first `-`. A channel ID of `winch-commands` has prefix `winch-`; a channel
-ID of `ring-telemetry` has prefix `ring-`.
+**Prefix extraction.** The protocol prefix is the substring of the Waterway name up to
+and including the first `-`. A Waterway named `tideway-commands` has prefix `tideway-`;
+a Waterway named `riverway-telemetry` has prefix `riverway-`.
 
-**Unrecognized prefix: halt and log.** If a node encounters a channel ID whose prefix
-does not match any registered protocol, the node halts and logs the unrecognized prefix.
+**Unrecognized prefix: halt and log.** If a Raft encounters a Waterway name whose prefix
+does not match any registered protocol, the Raft halts and logs the unrecognized prefix.
 It does not skip, apply a default protocol, or continue silently. Silent continuation on
 an unrecognized prefix would mask misconfiguration and risk data loss or corruption.
 
-**No default protocol.** There is no fallback protocol for an unprefixed or
-unrecognized channel ID. Every valid channel ID must begin with a registered prefix
-followed by `-`.
+**No default protocol.** There is no fallback protocol for an unprefixed or unrecognized
+Waterway name. Every valid Waterway name must begin with a registered prefix followed
+by `-`.
 
 ---
 
 ## Protocol Selection Rationale
 
-**Winch** is the correct choice when:
+**Tideway** is the correct choice when:
 
 - Each message must be confirmed delivered before the next can be sent
 - The pipeline carries commands, file transfers, or discrete task handoffs
 - Backpressure is desirable — the producer should block until the consumer has taken the
   previous message
 
-**Ring** is the correct choice when:
+**Riverway** is the correct choice when:
 
-- The producer must never stall waiting for a consumer
-- Individual entries may be lost without consequence
-- The stream as a whole is what matters — logs, telemetry, sensor feeds
-
-Backpressure is not a deficiency to work around in Winch — it is the core guarantee
-for its use cases. Ring is a sibling protocol, not a Winch variant with backpressure
-disabled.
+- Delivery confirmation is not required
+- Continuous or frequent writes should not block on consumer availability
+- Overwrite semantics are acceptable (most recent value wins)
 
 ---
 
@@ -65,8 +62,8 @@ A new protocol requires:
 2. A registered prefix in this file, with a link to the spec repo.
 3. A state machine implementation in each runtime that wishes to support the protocol
    (e.g. `dropchannel-py`).
-4. The state machine must operate exclusively through the `ChannelProvider` interface.
-   See [`channel-provider.md`](channel-provider.md).
+4. The state machine must operate exclusively through the `DockProvider` interface.
+   See [`dock-provider.md`](dock-provider.md).
 
-A protocol prefix must be a lowercase ASCII string containing no `-` characters, ending
-with `-` as the channel ID delimiter. Examples: `winch-`, `ring-`, `piston-`.
+A Waterway prefix must be a lowercase ASCII string containing no `-` characters, ending
+with `-` as the Waterway name delimiter. Examples: `tideway-`, `telemetry-`, `heartbeat-`.

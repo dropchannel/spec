@@ -1,18 +1,18 @@
 # Telemetry
 
-**Status:** Draft  
-**Prefix:** `telemetry-`  
-**Protocol:** Conveyer (overwrite-always, no ACK)  
-**Related:** `protocol-registry.md`, `conveyer-protocol/README.md`, `channel-provider.md`
+**Status:** Draft
+**Prefix:** `telemetry-`
+**Protocol:** Riverway (overwrite-always, no ACK)
+**Related:** `protocol-registry.md`, `riverway-protocol/README.md`, `dock-provider.md`
 
 ---
 
 ## Purpose
 
 The telemetry channel is a dedicated, always-on observability surface for DropChannel
-participants. Each participant — originator, terminator, or node — periodically writes
-a self-describing blob to its telemetry slot describing its current role, channel
-addresses, and slot occupancy state.
+participants. Each participant — originator, terminator, or Raft — periodically writes
+a self-describing blob to its telemetry Waterway describing its current role, channel
+addresses, and Waterway occupancy state.
 
 A monitoring tool can reconstruct the full topology and live state of a DropChannel
 system by reading the telemetry channel alone, without access to payload channels,
@@ -32,11 +32,11 @@ config files, or out-of-band communication.
 ## Channel naming
 
 Telemetry channels use the `telemetry-` prefix, placing them in the protocol registry
-alongside `winch-`, `conveyer-`, and other protocol prefixes.
+alongside `tideway-`, `riverway-`, and other protocol prefixes.
 
 A DropChannel deployment uses a **single shared telemetry channel** for all
-participants. All nodes and clients in the system write to the same channel, each
-to a uniquely-named slot identified by their `participant_id`.
+participants. All Rafts and clients in the system write to the same channel, each
+to a uniquely-named Waterway identified by their `participant_id`.
 
 **Naming convention:**
 
@@ -54,28 +54,28 @@ same channel.
 
 ## Protocol semantics
 
-The telemetry channel uses **Conveyer protocol semantics**:
+The telemetry channel uses **Riverway protocol semantics**:
 
 - **Overwrite-always:** Each write replaces the previous value unconditionally.
 - **No ACK:** There is no acknowledgement or backpressure. A participant writes and
   moves on.
 - **No required consumer:** The monitoring tool is optional. Participants emit
   telemetry regardless of whether anything is reading it.
-- **Single recv-slot per participant:** Each participant's slot is identified by
-  its `participant_id`. The slot name is the participant's unique identifier.
+- **Single Upper-side Waterway per participant:** Each participant's Waterway is identified by
+  its `participant_id`. The Waterway name is the participant's unique identifier.
 
 A participant emits telemetry by writing its blob to:
 
 ```
-channel: telemetry-{deployment_id}
-slot:    {participant_id}
+channel:   telemetry-{deployment_id}
+waterway:  {participant_id}
 ```
 
 Example:
 
 ```
-channel: telemetry-homelab-01
-slot:    node-alpha
+channel:   telemetry-homelab-01
+waterway:  raft-alpha
 ```
 
 Emission frequency is implementation-defined. A reasonable default is once per
@@ -86,7 +86,7 @@ nominal poll interval to keep staleness detectable.
 
 ## Telemetry blob schema
 
-Each participant writes a JSON blob to its slot. The schema is versioned; this is
+Each participant writes a JSON blob to its Waterway. The schema is versioned; this is
 schema version `1`.
 
 ### Common fields (all participants)
@@ -94,48 +94,48 @@ schema version `1`.
 | Field              | Type    | Required | Description |
 |--------------------|---------|----------|-------------|
 | `schema_version`   | integer | yes      | Schema version. Currently `1`. |
-| `participant_id`   | string  | yes      | Unique identifier for this participant within the deployment. Used as the slot name. |
-| `role`             | string  | yes      | `"originator"`, `"terminator"`, or `"node"` |
+| `participant_id`   | string  | yes      | Unique identifier for this participant within the deployment. Used as the Waterway name. |
+| `role`             | string  | yes      | `"originator"`, `"terminator"`, or `"raft"` |
 | `pipeline`         | string  | yes      | Operator-assigned label for the pipeline this participant belongs to (e.g. `"a_to_b"`). Used by monitoring tools to group participants visually. |
 | `state`            | string  | yes      | Current operational state. See [Participant states](#participant-states). |
 | `poll_interval_ms` | integer | yes      | Nominal polling interval in milliseconds. Used by monitoring tools to calculate expected emission frequency and infer staleness. |
 | `last_updated`     | string  | yes      | ISO-8601 UTC timestamp of when this blob was written. Format: `YYYY-MM-DDTHH:MM:SS.sssZ`. |
 
-### Node fields (role: `"node"`)
+### Raft fields (role: `"raft"`)
 
 | Field              | Type    | Required | Description |
 |--------------------|---------|----------|-------------|
-| `recv_channel_id`  | string  | yes      | Channel ID of this node's recv slot. |
-| `send_channel_id`  | string  | yes      | Channel ID of this node's send slot. |
-| `recv_occupied`    | boolean | yes      | Whether the recv slot is currently occupied. |
-| `send_occupied`    | boolean | yes      | Whether the send slot is currently occupied. |
+| `recv_channel_id`  | string  | yes      | Channel ID of this Raft's Upper-side Waterway. |
+| `send_channel_id`  | string  | yes      | Channel ID of this Raft's Lower-side Waterway. |
+| `recv_occupied`    | boolean | yes      | Whether the Upper-side Waterway is currently occupied. |
+| `send_occupied`    | boolean | yes      | Whether the Lower-side Waterway is currently occupied. |
 
 ### Originator fields (role: `"originator"`)
 
 | Field              | Type    | Required | Description |
 |--------------------|---------|----------|-------------|
-| `send_channel_id`  | string  | yes      | Channel ID of this originator's send slot. |
-| `send_occupied`    | boolean | yes      | Whether the send slot is currently occupied. |
+| `send_channel_id`  | string  | yes      | Channel ID of this originator's Lower-side Waterway. |
+| `send_occupied`    | boolean | yes      | Whether the Lower-side Waterway is currently occupied. |
 
 ### Terminator fields (role: `"terminator"`)
 
 | Field              | Type    | Required | Description |
 |--------------------|---------|----------|-------------|
-| `recv_channel_id`  | string  | yes      | Channel ID of this terminator's recv slot. |
-| `recv_occupied`    | boolean | yes      | Whether the recv slot is currently occupied. |
+| `recv_channel_id`  | string  | yes      | Channel ID of this terminator's Upper-side Waterway. |
+| `recv_occupied`    | boolean | yes      | Whether the Upper-side Waterway is currently occupied. |
 
 ### Example blobs
 
-**Node:**
+**Raft:**
 
 ```json
 {
   "schema_version": 1,
-  "participant_id": "node-alpha",
-  "role": "node",
+  "participant_id": "raft-alpha",
+  "role": "raft",
   "pipeline": "a_to_b",
-  "recv_channel_id": "winch-atb-0-1",
-  "send_channel_id": "winch-atb-1-2",
+  "recv_channel_id": "tideway-atb-0-1",
+  "send_channel_id": "tideway-atb-1-2",
   "recv_occupied": true,
   "send_occupied": true,
   "state": "send_polling",
@@ -152,7 +152,7 @@ schema version `1`.
   "participant_id": "client-a",
   "role": "originator",
   "pipeline": "a_to_b",
-  "send_channel_id": "winch-atb-0-1",
+  "send_channel_id": "tideway-atb-0-1",
   "send_occupied": true,
   "state": "awaiting_ack",
   "poll_interval_ms": 500,
@@ -168,7 +168,7 @@ schema version `1`.
   "participant_id": "client-b",
   "role": "terminator",
   "pipeline": "a_to_b",
-  "recv_channel_id": "winch-atb-3-b",
+  "recv_channel_id": "tideway-atb-3-b",
   "recv_occupied": false,
   "state": "recv_polling",
   "poll_interval_ms": 500,
@@ -186,10 +186,10 @@ state machine. Valid values:
 | State            | Applicable roles         | Description |
 |------------------|--------------------------|-------------|
 | `idle`           | originator               | No blob queued; originator is waiting for application layer. |
-| `recv_polling`   | node, terminator         | Polling recv slot; nothing held yet. |
-| `send_polling`   | node                     | Blob received and forwarded; polling send slot for ACK cascade. |
-| `awaiting_ack`   | originator               | Blob written to send slot; waiting for ACK cascade to clear it. |
-| `reading`        | terminator               | Recv slot occupied; consuming payload. |
+| `recv_polling`   | raft, terminator         | Polling Upper-side Waterway; nothing held yet. |
+| `send_polling`   | raft                     | Blob received and forwarded; polling Lower-side Waterway for ACK cascade. |
+| `awaiting_ack`   | originator               | Blob written to Lower-side Waterway; waiting for ACK cascade to clear it. |
+| `reading`        | terminator               | Upper-side Waterway occupied; consuming payload. |
 | `offline`        | any                      | Participant has emitted this state explicitly before going offline, or monitoring tool has inferred it from staleness. See [Staleness](#staleness). |
 
 Implementations SHOULD emit `offline` as the final telemetry write before a
@@ -213,8 +213,8 @@ topology beyond what participants self-report.
 
 1. Read all `{participant_id}.json` blobs from the telemetry channel.
 2. Build two maps:
-   - `send_map`: `channel_id → participant_id` (who sends on this channel)
-   - `recv_map`: `channel_id → participant_id` (who receives on this channel)
+   - `send_map`: `channel → participant_id` (who sends on this channel)
+   - `recv_map`: `channel → participant_id` (who receives on this channel)
 3. For each entry in `send_map`, look up the same channel in `recv_map`. A match
    is a directed edge: sender → receiver.
 4. Group participants by `pipeline` label.
@@ -258,27 +258,27 @@ Monitoring tools SHOULD visually distinguish between:
 ## Security considerations
 
 Telemetry blobs are written in **plaintext** to the telemetry channel. This is a
-deliberate design constraint: nodes are crypto-blind and cannot encrypt telemetry
+deliberate design constraint: Rafts are crypto-blind and cannot encrypt telemetry
 using payload keys they do not hold.
 
 **What telemetry exposes:**
 
 - `participant_id` values — operator-chosen labels, not cryptographic identifiers
-- `channel_id` values — the addresses of payload slots on the storage backend
-- Slot occupancy state — whether a blob is in transit at a given hop
+- `channel` values — the addresses of payload Waterways on the storage backend
+- Waterway occupancy state — whether a blob is in transit at a given hop
 - Pipeline labels and roles — the logical structure of the deployment
 
 **What telemetry does not expose:**
 
 - Payload content — never included in telemetry blobs
-- Encryption keys — nodes do not hold payload keys; originators and terminators
+- Encryption keys — Rafts do not hold payload keys; originators and terminators
   hold keys but do not emit them
-- Timing of payload content — only slot occupancy (present/absent), not when
+- Timing of payload content — only Waterway occupancy (present/absent), not when
   a specific payload was written
 
 **Threat model note:** An attacker with read access to the telemetry channel learns
-the channel IDs of payload slots. If they also have write access to the storage
-backend, they could attempt slot squatting or other storage-layer attacks. This is
+the channel IDs of payload Waterways. If they also have write access to the storage
+backend, they could attempt Waterway squatting or other storage-layer attacks. This is
 consistent with the existing threat model documented in `security-model.md`, where
 the storage backend is the primary attack surface. Telemetry does not increase
 the attack surface meaningfully beyond what is already present in the payload
@@ -295,4 +295,4 @@ The following entry belongs in `protocol-registry.md`:
 
 | Prefix       | Protocol | Description |
 |--------------|----------|-------------|
-| `telemetry-` | Conveyer | Observability channel. Participants emit self-describing state blobs. One shared channel per deployment; one slot per participant. No ACK, no backpressure, plaintext. |
+| `telemetry-` | Riverway | Observability channel. Participants emit self-describing state blobs. One shared channel per deployment; one Waterway per participant. No ACK, no backpressure, plaintext. |

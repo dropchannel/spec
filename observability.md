@@ -14,7 +14,7 @@ substitute for the other.
 |---|---|---|
 | **Layer** | Protocol liveness | External monitoring |
 | **Consumer** | Participants in the pipeline | Monitoring tools, operators |
-| **Transport** | Meta slots on payload channel positions | Dedicated side-channel (`telemetry-` prefix) |
+| **Transport** | Meta Waterways on payload channel positions | Dedicated side-channel (`telemetry-` prefix) |
 | **Answers** | "Is my upstream neighbor still alive?" | "What is the full topology and live state?" |
 | **Reaction** | Protocol-defined (participants can infer stall location, `closing` intent) | None — purely observational |
 | **Requires external tooling** | No | Yes |
@@ -25,17 +25,17 @@ substitute for the other.
 
 ## Heartbeat — protocol liveness
 
-Heartbeat is part of the protocol's operational behavior. Each node runs a heartbeat
-cycle concurrently with its primary slot state machine, reading upstream liveness
+Heartbeat is part of the protocol's operational behavior. Each Raft runs a heartbeat
+cycle concurrently with its primary Waterway state machine, reading upstream liveness
 signals and relaying them forward. Clients write status signals at transitions.
 
-Because nodes relay upstream content, a participant at any position can read the full
-liveness chain of all upstream participants from a single meta slot file. A broken
+Because Rafts relay upstream content, a participant at any position can read the full
+liveness chain of all upstream participants from a single meta Waterway file. A broken
 chain — indicated by the `HEARTBEAT_NOT_FOUND` sentinel — pinpoints the hop where
 liveness has been lost.
 
-Heartbeat works without any external tooling. A client can read its own recv-side
-meta slot and determine the health of the entire upstream pipeline.
+Heartbeat works without any external tooling. A client can read its own Upper-side meta
+Waterway and determine the health of the entire upstream pipeline.
 
 Heartbeat also carries the `closing` status signal: a client writing `closing`
 before shutdown makes intentional departure distinguishable from unexpected
@@ -49,12 +49,12 @@ disappearance.
 
 Telemetry is outside the protocol's operational flow. Each participant periodically
 writes a self-describing blob to a dedicated telemetry side-channel, reporting its
-role, channel addresses, slot occupancy, and current state. A monitoring tool
+role, channel addresses, Waterway occupancy, and current state. A monitoring tool
 reconstructs the full topology by joining participants on their channel IDs — no
 config files required.
 
 Telemetry provides information that heartbeat cannot: the full graph structure of the
-deployment, slot occupancy state at every hop, and multi-pipeline visibility in a
+deployment, Waterway occupancy state at every hop, and multi-pipeline visibility in a
 single view. It is the data source for operator-facing monitoring tools.
 
 Telemetry works across all implementations. Any participant — regardless of language
