@@ -230,12 +230,12 @@ Conformant implementations are listed in the [Implementations](#implementations)
 
 ```
 github.com/dropchannel/
-  spec/                 ← This repository: system specification (you are here)
+  spec/                 ← This repository: system specification and governance/ADR record (you are here)
   tideway-protocol/    ← Tideway protocol specification
   riverway-protocol/   ← Riverway protocol specification
   dc-monitor/              ← Implementation-agnostic topology visualizer
   dropchannel-py/       ← Python reference implementation
-  .github/              ← Org profile, ADRs, planning documents
+  .github/              ← Org profile
 ```
 
 This repository (`spec`) owns the system-level specification: the DockProvider
