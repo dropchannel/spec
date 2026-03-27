@@ -230,7 +230,7 @@ Conformant implementations are listed in the [Implementations](#implementations)
 
 ```
 github.com/dropchannel/
-  spec/                 ← This repository: system specification and governance/ADR record (you are here)
+  dropchannel/          ← This repository: system specification and governance/ADR record (you are here)
   tideway-protocol/    ← Tideway protocol specification
   riverway-protocol/   ← Riverway protocol specification
   dc-monitor/              ← Implementation-agnostic topology visualizer
@@ -238,7 +238,7 @@ github.com/dropchannel/
   .github/              ← Org profile
 ```
 
-This repository (`spec`) owns the system-level specification: the DockProvider
+This repository (`dropchannel`) owns the system-level specification: the DockProvider
 interface, encryption standard, security model, protocol dispatch rules, and
 protocol registry (`spec/`); the observability and runtime layer (`runtime/`);
 and the governance and decision record (`governance/`).

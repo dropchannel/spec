@@ -22,12 +22,12 @@
 - [ ] Implement startup protocol version logging per `governance/adr/pending/versioning.md`
 - [ ] Create annotated git tag `v1.0.0`
 
-## Org-level `spec/`
+## Org-level `dropchannel/`
 
 - [ ] Remove all inline "as of vX.Y" version qualifiers from markdown files
 - [ ] Add protocol repo links where specific behaviour is described
 
-## `spec/` ADR index
+## `dropchannel/` ADR index
 
 - [ ] Re-index `governance/adr/README.md` chronologically using `ADR-NNNN` sequential numbering
 - [ ] Move any version context from index categories into individual ADR bodies

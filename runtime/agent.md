@@ -1,6 +1,6 @@
 # DropChannel Agent — Functional Specification
 
-*spec/ repository — `runtime/agent.md`*
+*dropchannel/ repository — `runtime/agent.md`*
 *Status: Draft*
 
 ---
