@@ -150,12 +150,12 @@ specification:
 |--------|----------|-----------|------|
 | `tideway-` | Tideway | Turn-passing, backpressure, bidirectional on a single Waterway | [dropchannel/tideway-protocol](https://github.com/dropchannel/tideway-protocol) |
 | `riverway-` | Riverway | Continuous, unidirectional, overwrite-always, no ACK | [dropchannel/riverway-protocol](https://github.com/dropchannel/riverway-protocol) |
-| `telemetry-` | Riverway | Observability side-channel. Each participant writes a self-describing state blob to a shared Waterway, one Waterway per participant keyed by participant ID. No ACK, no backpressure, plaintext. Consumed by external monitoring tools. | [telemetry.md](telemetry.md) |
-| `heartbeat-` | Meta Waterway | Per-hop liveness chain operating on meta Waterways alongside primary payload Waterways. Rafts relay upstream heartbeat content forward; clients write status signals. Plaintext. | [heartbeat.md](heartbeat.md) |
+| `telemetry-` | Riverway | Observability side-channel. Each participant writes a self-describing state blob to a shared Waterway, one Waterway per participant keyed by participant ID. No ACK, no backpressure, plaintext. Consumed by external monitoring tools. | [telemetry.md](runtime/telemetry.md) |
+| `heartbeat-` | Meta Waterway | Per-hop liveness chain operating on meta Waterways alongside primary payload Waterways. Rafts relay upstream heartbeat content forward; clients write status signals. Plaintext. | [heartbeat.md](runtime/heartbeat.md) |
 
 The `telemetry-` and `heartbeat-` prefixes are reserved for the observability layer.
 They are listed here for completeness and prefix reservation — a conformant Raft
-does not dispatch payload traffic on these Waterways. See `spec/observability.md`.
+does not dispatch payload traffic on these Waterways. See [`runtime/observability.md`](runtime/observability.md).
 
 ### Unrecognized Prefixes
 
@@ -239,13 +239,13 @@ github.com/dropchannel/
 ```
 
 This repository (`spec`) owns the system-level specification: the DockProvider
-interface, encryption standard, security model, protocol dispatch rules, protocol
-registry, the observability layer (`observability.md`, `heartbeat.md`, `telemetry.md`),
-and the Agent/Worker runtime specification (`agent.md`).
+interface, encryption standard, security model, protocol dispatch rules, and
+protocol registry (`spec/`); the observability and runtime layer (`runtime/`);
+and the governance and decision record (`governance/`).
 
 The `dc-monitor/` repository owns the topology visualizer tool. It is
 implementation-agnostic — any conformant DropChannel implementation can feed it by
-emitting telemetry blobs as defined in `spec/telemetry.md`.
+emitting telemetry blobs as defined in [`runtime/telemetry.md`](runtime/telemetry.md).
 
 ---
 

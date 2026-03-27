@@ -1,6 +1,6 @@
 # DropChannel Agent — Functional Specification
 
-*spec/ repository — `agent.md`*
+*spec/ repository — `runtime/agent.md`*
 *Status: Draft*
 
 ---
@@ -409,8 +409,8 @@ monitors to detect a hung Worker (alive but silent) as distinct from a crashed W
 
 | Document | Relationship |
 |----------|-------------|
-| `dock-provider.md` | Defines the DockProvider interface that Workers use for all Dock operations |
-| `protocol-registry.md` | Defines how Workers dispatch protocol behavior from `waterway` prefix |
+| `spec/dock-provider.md` | Defines the DockProvider interface that Workers use for all Dock operations |
+| `spec/protocol-registry.md` | Defines how Workers dispatch protocol behavior from `waterway` prefix |
 | `heartbeat.md` | Workers participate in the heartbeat protocol independently of the Agent; the Agent does not mediate heartbeat activity |
 | `telemetry.md` | Defines the `telemetry-` channel semantics; this document extends it with the Agent blob schema |
 | `observability.md` | Provides the overview of the two-layer observability model (heartbeat + telemetry) |

@@ -3,7 +3,7 @@
 **Status:** Specified (introduced in dropchannel-py v0.6)
 **Prefix:** `heartbeat-`
 **Layer:** Protocol liveness — intra-pipeline observability
-**Related:** `observability.md`, `telemetry.md`, `dock-provider.md`, `protocol-registry.md`
+**Related:** `observability.md`, `telemetry.md`, `spec/dock-provider.md`, `spec/protocol-registry.md`
 
 ---
 
@@ -48,7 +48,7 @@ They hold only heartbeat files. There is no coupling, sequencing dependency, or 
 state between the primary and meta layers. Primary Waterway behavior is entirely unaffected
 by any meta Waterway state.
 
-Meta Waterway storage representations per provider are documented in `dock-provider.md`.
+Meta Waterway storage representations per provider are documented in `spec/dock-provider.md`.
 
 ---
 
@@ -266,7 +266,7 @@ upgrading incrementally.
 
 ## Protocol registry entry
 
-The following entry belongs in `protocol-registry.md`:
+The following entry belongs in `spec/protocol-registry.md`:
 
 | Prefix        | Protocol | Description |
 |---------------|----------|-------------|

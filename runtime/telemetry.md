@@ -3,7 +3,7 @@
 **Status:** Draft
 **Prefix:** `telemetry-`
 **Protocol:** Riverway (overwrite-always, no ACK)
-**Related:** `protocol-registry.md`, `riverway-protocol/README.md`, `dock-provider.md`
+**Related:** `spec/protocol-registry.md`, `riverway-protocol/README.md`, `spec/dock-provider.md`
 
 ---
 
@@ -279,7 +279,7 @@ using payload keys they do not hold.
 **Threat model note:** An attacker with read access to the telemetry channel learns
 the channel IDs of payload Waterways. If they also have write access to the storage
 backend, they could attempt Waterway squatting or other storage-layer attacks. This is
-consistent with the existing threat model documented in `security-model.md`, where
+consistent with the existing threat model documented in `spec/security-model.md`, where
 the storage backend is the primary attack surface. Telemetry does not increase
 the attack surface meaningfully beyond what is already present in the payload
 channels.
@@ -291,7 +291,7 @@ telemetry emission, accepting reduced observability in exchange.
 
 ## Protocol registry entry
 
-The following entry belongs in `protocol-registry.md`:
+The following entry belongs in `spec/protocol-registry.md`:
 
 | Prefix       | Protocol | Description |
 |--------------|----------|-------------|

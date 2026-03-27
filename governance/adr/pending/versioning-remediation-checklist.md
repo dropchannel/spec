@@ -1,6 +1,6 @@
 # Versioning Remediation Checklist
 
-**Purpose:** One-time remediation required to bring all existing repositories to a 1.0.0-ready state, as mandated by `governance/pending/ADR-XXXX-versioning-strategy.md`.
+**Purpose:** One-time remediation required to bring all existing repositories to a 1.0.0-ready state, as mandated by `governance/adr/pending/ADR-XXXX-versioning-strategy.md`.
 
 **Gate:** All items below must be complete before any org-wide 1.0.0 release is tagged.
 
@@ -11,15 +11,15 @@
 ## Protocol repos (`tideway-protocol/`, `riverway-protocol/`)
 
 - [ ] Create `CHANGELOG.md` at repo root; populate with a single `v1.0.0` entry summarising the protocol at initial stable release; link to existing `history/` files as the pre-1.0.0 record
-- [ ] Ensure all existing `history/v*.md` files meet the minimum content spec defined in `governance/pending/versioning.md`
+- [ ] Ensure all existing `history/v*.md` files meet the minimum content spec defined in `governance/adr/pending/versioning.md`
 - [ ] Create annotated git tag `v1.0.0`
 
 ## Implementation repo (`dropchannel-py/`)
 
 - [ ] Create `CHANGELOG.md` at repo root; populate with a single `v1.0.0` entry; link to existing `history/` files as the pre-1.0.0 record
-- [ ] Ensure all existing `history/v*.md` files meet the minimum content spec defined in `governance/pending/versioning.md`
+- [ ] Ensure all existing `history/v*.md` files meet the minimum content spec defined in `governance/adr/pending/versioning.md`
 - [ ] Create `PROTOCOLS.md` declaring protocol compatibility at `v1.0.0`
-- [ ] Implement startup protocol version logging per `governance/pending/versioning.md`
+- [ ] Implement startup protocol version logging per `governance/adr/pending/versioning.md`
 - [ ] Create annotated git tag `v1.0.0`
 
 ## Org-level `spec/`
@@ -35,6 +35,6 @@
 
 ## Final gate
 
-- [ ] Commit `governance/pending/ADR-XXXX-versioning-strategy.md` to its permanent location with assigned ADR number
-- [ ] Commit `governance/pending/versioning.md` to its permanent location
+- [ ] Commit `governance/adr/pending/ADR-XXXX-versioning-strategy.md` to its permanent location with assigned ADR number
+- [ ] Commit `governance/adr/pending/versioning.md` to its permanent location
 - [ ] Archive or close this checklist

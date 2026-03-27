@@ -46,14 +46,14 @@ Actual implementations live in sibling repositories (e.g., `dropchannel/dropchan
 | File | Owns |
 |------|------|
 | `README.md` | System overview, component definitions, DockProvider interface summary, protocol registry, conformance rules |
-| `dock-provider.md` | Full DockProvider interface: 5 primary Waterway ops + 4 meta Waterway ops, contracts, Waterway naming |
-| `encryption.md` | AES-256-GCM wire format, key distribution, security properties |
-| `security-model.md` | Trust boundaries, threat model, open items |
-| `protocol-registry.md` | Registered protocols, dispatch rules, how to add a protocol |
-| `observability.md` | Two-layer observability overview (heartbeat vs. telemetry) |
-| `heartbeat.md` | Per-hop liveness protocol using meta Waterways |
-| `telemetry.md` | External monitoring side-channel: blob schema, topology reconstruction |
-| `agent.md` | Agent/Worker runtime: TOML config schema, worker lifecycle, backoff, telemetry participation |
+| `spec/dock-provider.md` | Full DockProvider interface: 5 primary Waterway ops + 4 meta Waterway ops, contracts, Waterway naming |
+| `spec/encryption.md` | AES-256-GCM wire format, key distribution, security properties |
+| `spec/security-model.md` | Trust boundaries, threat model, open items |
+| `spec/protocol-registry.md` | Registered protocols, dispatch rules, how to add a protocol |
+| `runtime/observability.md` | Two-layer observability overview (heartbeat vs. telemetry) |
+| `runtime/heartbeat.md` | Per-hop liveness protocol using meta Waterways |
+| `runtime/telemetry.md` | External monitoring side-channel: blob schema, topology reconstruction |
+| `runtime/agent.md` | Agent/Worker runtime: TOML config schema, worker lifecycle, backoff, telemetry participation |
 
 ## Architecture Summary
 
