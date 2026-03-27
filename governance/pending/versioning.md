@@ -1,6 +1,6 @@
 # Versioning Conventions
 
-This document defines the operational conventions for versioning artefacts across the `dropchannel/` org. It is the authoritative reference for format requirements and templates. The decisions behind these conventions are recorded in `docs/adr/ADR-XXXX-versioning-strategy.md`.
+This document defines the operational conventions for versioning artefacts across the `dropchannel/` org. It is the authoritative reference for format requirements and templates. The decisions behind these conventions are recorded in `governance/pending/ADR-XXXX-versioning-strategy.md`.
 
 ---
 

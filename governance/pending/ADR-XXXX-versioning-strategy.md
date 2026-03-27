@@ -15,9 +15,9 @@ The DropChannel org contains three categories of repository, each with a distinc
 - **Implementation repos** (`dropchannel-py/`, and future language implementations) — package one or more protocol handlers; versioned on their own release cadence
 - **Org-level spec** (`spec/`) — living conceptual documentation; not independently versioned
 
-This ADR defines the versioning strategy that governs the org from the 1.0.0 release onwards. It also records the one-time remediation required to bring existing repositories to a 1.0.0-ready state; the detailed remediation checklist is maintained separately at `docs/pending/versioning-remediation-checklist.md`.
+This ADR defines the versioning strategy that governs the org from the 1.0.0 release onwards. It also records the one-time remediation required to bring existing repositories to a 1.0.0-ready state; the detailed remediation checklist is maintained separately at `governance/pending/versioning-remediation-checklist.md`.
 
-Operational conventions (changelog templates, `history/` file formats, `PROTOCOLS.md` format) are defined in `docs/conventions/versioning.md`.
+Operational conventions (changelog templates, `history/` file formats, `PROTOCOLS.md` format) are defined in `governance/pending/versioning.md`.
 
 ---
 
@@ -96,11 +96,11 @@ The tag is the canonical VCS anchor for a version. A version is not considered p
 
 ### 1.5 Changelog and History Artefacts
 
-Each protocol and implementation repo maintains a `CHANGELOG.md` at root and per-version `history/v<version>.md` files. Format requirements and templates are defined in `docs/conventions/versioning.md`.
+Each protocol and implementation repo maintains a `CHANGELOG.md` at root and per-version `history/v<version>.md` files. Format requirements and templates are defined in `governance/pending/versioning.md`.
 
 ### 1.6 Protocol Compatibility Manifest (`PROTOCOLS.md`)
 
-Each implementation repo carries a `PROTOCOLS.md` file at the repository root declaring which protocol version each handler targets. Format and update rules are defined in `docs/conventions/versioning.md`.
+Each implementation repo carries a `PROTOCOLS.md` file at the repository root declaring which protocol version each handler targets. Format and update rules are defined in `governance/pending/versioning.md`.
 
 ### 1.7 Org-Level `spec/` Repo
 
@@ -140,7 +140,7 @@ None of the pre-1.0.0 version history will be retroactively tagged. The existing
 
 ### 2.2 Remediation
 
-A detailed remediation checklist covering all repos is maintained at `docs/pending/versioning-remediation-checklist.md`. All items in that checklist must be completed as a prerequisite to the org-wide 1.0.0 release.
+A detailed remediation checklist covering all repos is maintained at `governance/pending/versioning-remediation-checklist.md`. All items in that checklist must be completed as a prerequisite to the org-wide 1.0.0 release.
 
 ---
 

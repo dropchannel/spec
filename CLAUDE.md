@@ -28,7 +28,7 @@ Actual implementations live in sibling repositories (e.g., `dropchannel/dropchan
   * "Shared storage" not "untrusted shared infrastructure".
 * One concern per file. Propose a new file rather than expanding an existing one's scope.
 * Cross-repo links (to other repos in the DropChannel org) use <https://github.com/dropchannel/> as the URL root. Intra-repo links use relative URLs.
-* When producing spec changes that add a new file, rename a component, or resolve a Known Gap, also update CLAUDE.md to reflect the new state.
+* When producing spec changes that add a new file, rename a component, resolve a Known Gap, or promote an ADR into `governance/adr/`, also update CLAUDE.md to reflect the new state.
 
 **Do not use retired terms.** Current vocabulary:
 
@@ -66,6 +66,32 @@ Actual implementations live in sibling repositories (e.g., `dropchannel/dropchan
 **DockProvider interface:** `write`, `read` (destructive/consume-on-read), `peek` (non-destructive), `exists`, `delete` — plus meta Waterway variants (`meta_write`, `meta_read`, `meta_delete`, `meta_list`). All operations take `(channel, waterway, filename, ...)` parameters.
 
 **Agent/Worker runtime:** Agent is a host-level supervisor owning a 5-section TOML config (`[agent]`, `[log]`, `[telemetry]`, `[docks]`, `[workers]`). Workers are subprocesses that receive config via stdin as JSON and emit structured JSON logs. Worker restart uses exponential backoff capped at 30s; degraded state triggers after 5 crashes within 60s of spawn.
+
+## ADR format
+
+ADRs live in the [`spec`](https://github.com/dropchannel/spec) repo.
+ADR numbers use 4-digit zero-padded format: `ADR-NNNN`.
+
+Standard sections and Format: See [governance/adr/TEMPLATE.md](governance/adr/TEMPLATE.md)
+
+The three tiers:
+
+* **Full ADR** — load-bearing decisions where the Consequences section is the point. Write as individual `ADR-NNNN.md`.
+* **Short ADR** — clear rationale, fits in 2–3 paragraphs. Individual file.
+* **Log entry** — table row in the spec repo's ADR index is sufficient.
+
+Priority candidates for full ADR treatment: 0008, 0010, 0017, 0021, 0033.
+
+Individual ADR files (`ADR-0001.md` through `ADR-0035.md`) have not been written yet —
+the master index in the spec repo is the current extent of ADR content.
+ADR-0036 and ADR-0037 have individual files.
+
+The 35 earlier ADRs have not been triaged into full / short / log-entry tiers.
+
+**Starting a new ADR-writing session:** provide the spec repo's ADR index,
+then specify which ADRs to write and at what depth. Example:
+> "Read CLAUDE.md and the ADR index. Write full ADR documents for ADRs 0008, 0010,
+> and 0017. Use the standard ADR format: Title, Status, Context, Decision, Consequences."
 
 ## Known Gaps (as of v0.6)
 
